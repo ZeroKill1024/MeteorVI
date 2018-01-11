@@ -32,11 +32,21 @@ function MyDiff()
   endif
 endfunction
 
-"""""""""""""""""""" custom configuration """"""""""""""""""""
+"""""""""""""""""""" user's configuration """"""""""""""""""""
+" general {
+function IsLinux()
+	return (has('unix') && !has('macunix') && !has('win32unix'))
+endfunction
+function IsWindows()
+	return (has('win32') || has('win64'))
+endfunction
+function IsOSX()
+	return has('macunix')
+endfunction
+" }
+" system config {
 " automatic full screen at startup
 autocmd GUIEnter * simalt ~x
-" defined <Leader>
-let mapleader = ";"
 " support utf-8
 if has("multi_byte")
     set encoding=utf-8 
@@ -54,64 +64,209 @@ if has("multi_byte")
 else 
     echoerr "sorry, this version of (g)vim was not compiled with +multi_byte" 
 endif
+" 开启文件类型侦测
+filetype on
+" 根据侦测到的不同类型加载对应的插件
+filetype plugin on
+" 让配置变更立即生效
+autocmd BufWritePost $MYVIMRC source $MYVIMRC
+" }
 
-" text editor configuration
+" keyboard config {
+" defined <Leader>
+let mapleader = ";"
+" 定义快捷键到行首和行尾
+nmap LB 0
+nmap LE $
+" 设置快捷键将选中文本块复制至系统剪贴板
+vnoremap <Leader>y "+y
+" 设置快捷键将系统剪贴板内容粘贴至 vim
+nmap <Leader>p "+p
+" 定义快捷键关闭当前分割窗口
+nmap <Leader>q :q<CR>
+" 定义快捷键保存当前窗口内容
+nmap <Leader>w :w<CR>
+" 定义快捷键保存所有窗口内容并退出 vim
+nmap <Leader>WQ :wa<CR>:q<CR>
+" 不做任何保存，直接退出 vim
+nmap <Leader>Q :qa!<CR>
+" 依次遍历子窗口
+nnoremap nw <C-W><C-W>
+" 跳转至右方的窗口
+nnoremap <Leader>lw <C-W>l
+" 跳转至左方的窗口
+nnoremap <Leader>hw <C-W>h
+" 跳转至上方的子窗口
+nnoremap <Leader>kw <C-W>k
+" 跳转至下方的子窗口
+nnoremap <Leader>jw <C-W>j
+" 定义快捷键在结对符之间跳转
+nmap <Leader>M %
+" }
+
+" text editor config {
 set nu!
+" 开启语法高亮功能
 syntax enable 
+" 允许用指定语法高亮配色方案替换默认方案
 syntax on
 "set guifont=Consolas:h10
 set guifont=Monaco:h10
+" 开启实时搜索功能
+set incsearch
+" 搜索时大小写不敏感
+set ignorecase
+" 关闭兼容模式
+set nocompatible
+" vim 自身命令行模式智能补全
+set wildmenu
+" 总是显示状态栏
+set laststatus=2
+" 显示光标当前位置
+set ruler
+" 开启行号显示
+set number
+" 高亮显示当前行/列
+set cursorline
+"set cursorcolumn
+" 高亮显示搜索结果
+set hlsearch
+" 自适应不同语言的智能缩进
+filetype indent on
+" 将制表符扩展为空格
+set expandtab
+" 设置编辑时制表符占用空格数
+set tabstop=4
+" 设置格式化时制表符占用空格数
+set shiftwidth=4
+" 让 vim 把连续数量的空格视为一个制表符
+set softtabstop=4
+" 基于缩进或语法进行代码折叠
+"set foldmethod=indent
+set foldmethod=syntax
+" 启动 vim 时关闭折叠代码
+set nofoldenable
+" }
 
-" Vundle
-filetype off
-set rtp+=$VIM/vimfiles/bundle/vundle/
-call vundle#rc('$VIM/vimfiles/bundle/')
-Bundle 'gmarik/vundle'
-filetype plugin indent on
-" original repos on github
-Bundle 'mattn/zencoding-vim'
-Bundle 'drmingdrmer/xptemplate'
-" vim-scripts repos
-Bundle 'vim-markdown'
-filetype plugin indent on " required!
-
-" plugs
-Bundle 'https://github.com/scrooloose/nerdtree.git'
-Bundle 'https://github.com/kien/ctrlp.vim.git'
-Bundle 'lilydjwg/fcitx.vim'
-
-" solarized
-syntax enable  
-colorscheme solarized
+" theme config {
+" solarized {
 set background=dark
+colorscheme solarized
+"colorscheme molokai
+"colorscheme phd
+" }
+" 禁止光标闪烁
+set gcr=a:block-blinkon0
+" 禁止显示滚动条
+set guioptions-=l
+set guioptions-=L
+set guioptions-=r
+set guioptions-=R
+" 禁止显示菜单和工具条
+set guioptions-=m
+set guioptions-=T
+" }
 
-" NERDTree
+" vundle {
+if IsWindows()
+set rtp+=$VIM/vimfiles/bundle/Vundle.vim 
+call vundle#rc('$VIM/vimfiles/bundle/')
+else
+set rtp+=~/.vim/bundle/Vundle.vim 
+call vundle#rc()
+endif
+" plugs {
+Plugin 'VundleVim/Vundle.vim.git'
+Plugin 'scrooloose/nerdtree.git'
+Plugin 'kien/ctrlp.vim.git'
+Plugin 'lilydjwg/fcitx.vim.git'
+Plugin 'Xuyuanp/nerdtree-git-plugin.git'
+Plugin 'majutsushi/tagbar.git'
+Plugin 'vim-airline/vim-airline.git'
+Plugin 'nathanaelkane/vim-indent-guides.git'
+Plugin 'octol/vim-cpp-enhanced-highlight.git'
+Plugin 'derekwyatt/vim-fswitch.git'
+Plugin 'derekwyatt/vim-protodef.git'
+Plugin 'scrooloose/nerdcommenter.git'
+if has("win32")
+    Plugin 'snakeleon/YouCompleteMe-x32'
+elseif has("win64")
+    Plugin 'snakeleon/YouCompleteMe-x64'
+else
+    Plugin 'Valloric/YouCompleteMe'
+endif
+" }
+" }
+
+" YouCompleteMe {
+if has("win64")
+    let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/bundle/YouCompleteMe-x64/python/.ycm_extra_conf.py'
+elseif has("win32")
+    let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/bundle/YouCompleteMe-x86/python/.ycm_extra_conf.py'
+else
+    let g:ycm_global_ycm_extra_conf = $HOME.'/.vim/bundle/YouCompleteMe/python/.ycm_extra_conf.py'
+endif
+" }
+
+" vim-fswitch {
+" *.cpp 和 *.h 间切换
+nmap <silent> <Leader>sw :FSHere<cr>
+" }
+
+" vim-indent-guides {
+" 随 vim 自启动
+let g:indent_guides_enable_on_vim_startup=1
+" 从第二层开始可视化显示缩进
+let g:indent_guides_start_level=2
+" 色块宽度
+let g:indent_guides_guide_size=1
+" 快捷键 i 开/关缩进可视化
+nmap <silent> <Leader>i <Plug>IndentGuidesToggle
+" }
+
+" tagbar {
+nmap <Leader>tb :TagbarToggle<CR>
+" {
+
+" nerdtree-git-plugin {
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "...",
+    \ "Staged"    : "+",
+    \ "Untracked" : "?",
+    \ "Renamed"   : "->",
+    \ "Unmerged"  : "!",
+    \ "Deleted"   : "x",
+    \ "Dirty"     : "*",
+    \ "Clean"     : "o",
+    \ "Ignored"   : "-",
+    \ "Unknown"   : "u"
+    \ }
+" }
+
+" NERDTree {
 " 在 vim 启动的时候默认开启 NERDTree（autocmd 可以缩写为 au）
 autocmd VimEnter * NERDTree
-
-" 按下 F2 调出/隐藏 NERDTree
-map  :silent! NERDTreeToggle
-
+nmap <Leader>fl :NERDTreeToggle<CR>
 " 将 NERDTree 的窗口设置在 vim 窗口的右侧（默认为左侧）
 let NERDTreeWinPos="right"
-
 " 当打开 NERDTree 窗口时，自动显示 Bookmarks
 let NERDTreeShowBookmarks=1
-
 " 显示行号
 let NERDTreeShowLineNumbers=1
 let NERDTreeAutoCenter=1
 " 是否显示隐藏文件
 let NERDTreeShowHidden=1
-
+" NERDTree 子窗口中不显示冗余帮助信息
+let NERDTreeMinimalUI=1
+" 删除文件时自动删除文件对应 buffer
+let NERDTreeAutoDeleteBuffer=1
 " vim不指定具体文件打开是，自动使用nerdtree
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-
 " 当vim打开一个目录时，nerdtree自动使用
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-
 " 当vim中没有其他文件，值剩下nerdtree的时候，自动关闭窗口
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" }
 
