@@ -104,6 +104,9 @@ nnoremap <Leader>kw <C-W>k
 nnoremap <Leader>jw <C-W>j
 " 定义快捷键在结对符之间跳转
 nmap <Leader>M %
+" 显示非可见字符
+set list
+set listchars=eol:┐,trail:┐,tab:>-,nbsp:.,precedes:«,extends:»
 " }
 
 " text editor config {
@@ -251,7 +254,7 @@ let g:indent_guides_start_level=2
 " 色块宽度
 let g:indent_guides_guide_size=1
 " 快捷键 i 开/关缩进可视化
-nmap <silent> <Leader>i <Plug>IndentGuidesToggle
+nmap <silent> <Leader>ig <Plug>IndentGuidesToggle
 " }
 
 " tagbar {
@@ -260,16 +263,16 @@ nmap <Leader>tb :TagbarToggle<CR>
 
 " nerdtree-git-plugin {
 let g:NERDTreeIndicatorMapCustom = {
-    \ "Modified"  : "...",
+    \ "Modified"  : "*",
     \ "Staged"    : "+",
-    \ "Untracked" : "?",
-    \ "Renamed"   : "->",
-    \ "Unmerged"  : "!",
-    \ "Deleted"   : "x",
-    \ "Dirty"     : "*",
-    \ "Clean"     : "o",
-    \ "Ignored"   : "-",
-    \ "Unknown"   : "u"
+    \ "Untracked" : "☆",
+    \ "Renamed"   : "→",
+    \ "Unmerged"  : "=",
+    \ "Deleted"   : "X",
+    \ "Dirty"     : "x",
+    \ "Clean"     : "√",
+    \ "Ignored"   : "◎",
+    \ "Unknown"   : "?"
     \ }
 " }
 
