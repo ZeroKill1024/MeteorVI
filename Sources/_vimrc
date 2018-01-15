@@ -76,6 +76,11 @@ if IsWindows()
 " 窗口自动透明
 au GUIEnter * call libcallnr("vimtweak.dll", "SetAlpha", 238)
 endif
+" 不在当前目录生成备份文件
+"set undodir = $VIM/undodir/
+set noundofile
+set nobackup
+set noswapfile
 " }
 
 " keyboard config {
@@ -249,7 +254,8 @@ endif
 "set tags+=/data/misc/software/misc./vim/stdcpp.tags
 set rtp+=$VIM/vimfiles/bundle/YouCompleteMe 
 let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-let g:ycm_path_to_python_interpreter = "F:/PROGRAM/technology/Python/python.exe"
+"let g:ycm_path_to_python_interpreter = $PYTHON_HOME."/python.exe"
+let g:ycm_path_to_python_interpreter = "D:/Develop/Python27/python.exe"
 " }
 
 " vim-fswitch {
