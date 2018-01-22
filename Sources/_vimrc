@@ -86,6 +86,12 @@ set noswapfile
 " keyboard config {
 " defined <Leader>
 let mapleader = ";"
+" 通用快捷键，相同的功能用相同的快捷键 {
+" 上下分屏，水平排列
+let hsplit = "hsp"
+" 左右分屏，垂直排列
+let vsplit = "vsp"
+" }
 " 定义快捷键到行首和行尾
 nmap LB 0
 nmap LE $
@@ -298,7 +304,9 @@ let g:NERDTreeIndicatorMapCustom = {
 " NERDTree {
 " 在 vim 启动的时候默认开启 NERDTree（autocmd 可以缩写为 au）
 autocmd VimEnter * NERDTree
-nmap <Leader>fl :NERDTreeToggle<CR>
+nmap <Leader>n :NERDTreeToggle<CR>
+let g:NERDTreeMapOpenSplit = hsplit 
+let g:NERDTreeMapOpenVSplit = vsplit
 " 将 NERDTree 的窗口设置在 vim 窗口的右侧（默认为左侧）
 let NERDTreeWinPos="right"
 " 当打开 NERDTree 窗口时，自动显示 Bookmarks
@@ -320,5 +328,23 @@ autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
 " 当vim中没有其他文件，值剩下nerdtree的时候，自动关闭窗口
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" }
+
+" ctrlp {
+let g:ctrlp_map = '<leader>p'
+let g:ctrlp_cmd = 'CtrlP'
+map <leader>f :CtrlPMRU<CR>
+let g:ctrlp_custom_ignore = {
+    \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',
+    \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc)$',
+    \ }
+" }
+
+" ctrlp-funky {
+nnoremap <Leader>fu :CtrlPFunky<Cr>
+" narrow the list down with a word under cursor
+nnoremap <Leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
+let g:ctrlp_funky_syntax_highlight = 1
+let g:ctrlp_extensions = ['funky']
 " }
 
