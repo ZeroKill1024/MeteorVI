@@ -214,6 +214,7 @@ Plugin 'derekwyatt/vim-fswitch.git'
 Plugin 'derekwyatt/vim-protodef.git'
 Plugin 'scrooloose/nerdcommenter.git'
 Plugin 'Valloric/YouCompleteMe.git'
+Plugin 'kovisoft/slimv.git'
 if has("win32")
     "Plugin 'snakeleon/YouCompleteMe-x86'
 elseif has("win64")
@@ -221,6 +222,14 @@ elseif has("win64")
 else
 endif
 " }
+" }
+
+" slimv {
+if IsLinux()
+    let g:slimv_swank_cmd = '! xterm -e sbcl --load /usr/share/common-lisp/source/slime/start-swank.lisp &'
+elseif IsWindows()
+    let g:slimv_swank_cmd = '!start "D:/Develop/ccl19/wx86cl.exe" -l' . $VIM.'/vimfiles/bundle/slimv/slime/start-swank.lisp'
+endif
 " }
 
 " YouCompleteMe {
