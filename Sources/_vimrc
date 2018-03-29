@@ -219,7 +219,9 @@ Plugin 'derekwyatt/vim-fswitch.git'
 Plugin 'derekwyatt/vim-protodef.git'
 Plugin 'scrooloose/nerdcommenter.git'
 Plugin 'Valloric/YouCompleteMe.git'
-Plugin 'kovisoft/slimv.git'
+Plugin 'kovisoft/slimv.git'      " lisp support
+Plugin 'xolox/vim-misc'          " required by lua.vim
+Plugin 'xolox/vim-lua-ftplugin'  " lua file type plug-in for the vim text editor
 if has("win32")
     "Plugin 'snakeleon/YouCompleteMe-x86'
 elseif has("win64")
