@@ -1,3 +1,8 @@
+"
+" references: https://github.com/wsdjeg/vim-galore-zh_cn
+"            https://github.com/yangyangwithgnu/use_vim_as_ide
+"
+
 source $VIMRUNTIME/vimrc_example.vim
 source $VIMRUNTIME/mswin.vim
 behave mswin
