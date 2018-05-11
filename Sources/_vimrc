@@ -32,6 +32,13 @@ function MyDiff()
   endif
 endfunction
 
+function OpenFileLocation()
+    if ( expand("%") != "" )
+        execute "!start explorer /select, %"
+    else
+        execute "!start explorer /select, %:p:h"
+    endif
+endfunction
 
 """""""""""""""""""" custom configuration """"""""""""""""""""
 "
@@ -58,20 +65,20 @@ endfunction
 
     " support utf-8
     if has("multi_byte")
-        set encoding=utf-8 
-        set termencoding=utf-8 
-        set formatoptions+=mM 
-        set fencs=utf-8,gbk 
-        if v:lang =~? '^/(zh/)/|/(ja/)/|/(ko/)' 
-            set ambiwidth=double 
-        endif 
-        if has("win32") 
-            source $VIMRUNTIME/delmenu.vim 
-            source $VIMRUNTIME/menu.vim 
-            language messages zh_CN.utf-8 
-        endif 
-    else 
-        echoerr "sorry, this version of (g)vim was not compiled with +multi_byte" 
+        set encoding=utf-8
+        set termencoding=utf-8
+        set formatoptions+=mM
+        set fencs=utf-8,gbk
+        if v:lang =~? '^/(zh/)/|/(ja/)/|/(ko/)'
+            set ambiwidth=double
+        endif
+        if has("win32")
+            source $VIMRUNTIME/delmenu.vim
+            source $VIMRUNTIME/menu.vim
+            language messages zh_CN.utf-8
+        endif
+    else
+        echoerr "sorry, this version of (g)vim was not compiled with +multi_byte"
     endif
 
     " 让配置变更立即生效
@@ -90,10 +97,13 @@ endfunction
     set noundofile
     set nobackup
     set noswapfile
-    
+
     " 显示非可见字符
     set list
     set listchars=eol:┐,trail:┐,tab:>-,nbsp:.,precedes:«,extends:»
+
+    " 打开文件的同时，自动切换当前路径
+    autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
 " }
 
 
@@ -157,10 +167,14 @@ endfunction
 
             " 定义快捷键保存当前窗口内容
             nmap <Leader>fw :w<CR>
+            nmap <Leader>fwa :wa<CR>
             nmap <Leader>fwq :wq<CR>
 
             " 定义快捷键保存所有窗口内容并退出 vim
             nmap <Leader>fwqa :wa<CR>:q<CR>
+
+            " 打开当前文件所在位置
+            nmap <leader>fo <ESC>:call OpenFileLocation()<CR>
 
             " 定义快捷键在结对符之间跳转
             nmap <Leader>m %
@@ -566,7 +580,7 @@ endfunction
         set rtp +=$VIM/vimfiles/bundle/YouCompleteMe 
         let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
         "let g:ycm_path_to_python_interpreter = $PYTHON_HOME.'/python.exe"
-        let g:ycm_path_to_python_interpreter = 'D:/Develop/Python27/python.exe'
+        let g:ycm_path_to_python_interpreter = 'F:/PROGRAM/technology/Python/python.exe'
     " }
 
     " Slimv {
