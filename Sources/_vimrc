@@ -122,6 +122,9 @@ endfunction
         let open  ="o"
         let sopen ="so"
 
+        " 在新标签页中打开
+        let tab ="tb"
+
         " 切换工作目录
         let cwd ="cd"
 
@@ -255,8 +258,33 @@ endfunction
             nmap <Leader>w' <C-W>=
         " }
 
+        " 标签操作 {
+            " 新建标签
+            nmap <Leader>tn :tabnew
+
+            " 关闭标签
+            nmap <Leader>tc :tabc
+
+            " 在新标签中打开当前缓冲区中的文件
+            nmap <Leader>to :tab split
+
+            " 跳转到下/上一个标签: gt gT
+
+            " 跳转到第一个标签
+            nmap <Leader>tf :tabfirst
+
+            " 跳转到最后一个标签
+            nmap <Leader>tl :tablast
+
+            " 移动标签
+            "nmap <Leader>tm :tabm 1
+
+            " 显示标签列表
+            nmap <Leader>ts :tabs
+        " }
+
         " 切换当前目录为正在编辑的文件所在目录
-        nnoremap <silent><leader>cd. :cd %:p:h<CR>
+        nnoremap <silent><leader>cd :cd %:p:h<CR>
     " }
 
     " Plugins's Function {
@@ -296,11 +324,12 @@ endfunction
             nmap <Leader>nbm :Bookmark<CR>
 
             let g:NERDTreeMapActivateNode  =open
-            let g:NERDTreeMapPreview       =sopen 
-            let g:NERDTreeMapOpenSplit     =hsplit 
-            let g:NERDTreeMapPreviewSplit  =shsplit 
+            let g:NERDTreeMapPreview       =sopen
+            let g:NERDTreeMapOpenSplit     =hsplit
+            let g:NERDTreeMapPreviewSplit  =shsplit
             let g:NERDTreeMapOpenVSplit    =vsplit
             let g:NERDTreeMapPreviewVSplit =svsplit
+            let g:NERDTreeMapOpenInTab     =tab
             let g:NERDTreeMapChdir         =cwd
             let g:NERDTreeMapMenu          =menu
             let g:NERDTreeMapQuit          =quit
