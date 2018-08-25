@@ -39,7 +39,7 @@ endfunction
 "             https://github.com/yangyangwithgnu/use_vim_as_ide
 "             https://github.com/spf13/spf13-vim
 "
-" General Config{
+" General Config {
     function IsLinux()
         return (has('unix') && !has('macunix') && !has('win32unix'))
     endfunction
@@ -53,6 +53,7 @@ endfunction
 
 
 " System Config {
+    " =右边不可有空格，否则不能识别
     " automatic full screen at startup
     autocmd GUIEnter * simalt ~x
 
@@ -157,6 +158,7 @@ endfunction
 
             " 定义快捷键保存当前窗口内容
             nmap <Leader>fw :w<CR>
+            nmap <Leader>fwa :w<CR>
             nmap <Leader>fwq :wq<CR>
 
             " 定义快捷键保存所有窗口内容并退出 vim
@@ -387,7 +389,7 @@ endfunction
     "set foldmethod =indent
     "set foldmethod =syntax
     set foldmethod =marker
-    set foldmarker ={,}
+    set foldmarker ={{,}}
 " }
 
 
