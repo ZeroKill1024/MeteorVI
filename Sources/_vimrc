@@ -48,7 +48,7 @@ endfunction
 "             https://github.com/yangyangwithgnu/use_vim_as_ide
 "             https://github.com/spf13/spf13-vim
 "
-" General Config {
+" General Config {@{
     function IsLinux()
         return (has('unix') && !has('macunix') && !has('win32unix'))
     endfunction
@@ -58,10 +58,10 @@ endfunction
     function IsOSX()
         return has('macunix')
     endfunction
-" }
+" }@}
 
 
-" System Config {
+" System Config {@{
     " =右边不可有空格，否则不能识别
     " automatic full screen at startup
     autocmd GUIEnter * simalt ~x
@@ -107,11 +107,11 @@ endfunction
 
     " 打开文件的同时，自动切换当前路径
     autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
-" }
+" }@}
 
 
-" Keyboard Config {
-    " 通用快捷键，保证相同的功能用相同的快捷键 {
+" Keyboard Config {@{
+        " 通用快捷键，保证相同的功能用相同的快捷键 {@{
         " 上下分屏，水平排列，并是/否跳转
         let hsplit  ="hsp"   " short for 'h'
         let shsplit ="shsp"  " short for 'sh'
@@ -166,13 +166,13 @@ endfunction
         let dssearch = "dsf"
         " 当前文件搜索
         let fssearch = "fsf"
-    " }
+    " }@}
 
     " defined <Leader>
     let mapleader =";"
 
-    " Vim's Function {
-        " 文档操作 {
+    " Vim's Function {@{
+        " 文档操作 {@{
             " 设置快捷键将选中文本块复制至系统剪贴板
             vnoremap <Leader>sy "+y
 
@@ -215,9 +215,9 @@ endfunction
             " 跳转到下/上一个折叠
             nnoremap <leader><space>j zj
             nnoremap <leader><space>k zk
-        " }
+        " }@}
 
-        " 窗口操作 {
+        " 窗口操作 {@{
             " 跳转至右方的窗口
             nnoremap <Leader>lw <C-W>l
 
@@ -274,9 +274,9 @@ endfunction
 
             " 让所有窗口调整至相同尺寸
             nmap <Leader>w' <C-W>=
-        " }
+        " }@}
 
-        " 标签操作 {
+        " 标签操作 {@{
             " 新建标签
             nmap <Leader>tn :tabnew
 
@@ -299,15 +299,15 @@ endfunction
 
             " 显示标签列表
             nmap <Leader>ts :tabs
-        " }
+        " }@}
 
         " 切换当前目录为正在编辑的文件所在目录
         nnoremap <silent><leader>cd :cd %:p:h<CR>
-    " }
+    " }@}
 
-    " Plugins's Function {
+    " Plugins's Function {@{
         " https://github.com/kien/ctrlp.vim/blob/master/doc/ctrlp.txt
-        " Ctrlp {
+        " Ctrlp {@{
             " 搜索当前目录下文件
             let g:ctrlp_map ='<leader>p'
             let g:ctrlp_cmd ='CtrlP'
@@ -320,17 +320,17 @@ endfunction
 
             " 上下分屏打开文件
             nmap <CR>h :<CR>x
-        " }
+        " }@}
 
-        " CtrlpFunky {
+        " CtrlpFunky {@{
             " 进入当前文件的函数列表搜索
             nnoremap <Leader>fu :CtrlPFunky<Cr>
 
             " narrow the list down with a word under cursor
             nnoremap <Leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
-        " }
+        " }@}
 
-        " NERDTree {
+        " NERDTree {@{
             " https://github.com/scrooloose/nerdtree/blob/master/doc/NERDTree.txt
             " 打开/关闭NERDTree
             nmap <Leader>nt :NERDTreeToggle<CR>
@@ -354,40 +354,40 @@ endfunction
             let g:NERDTreeMapToggleZoom    =FullScreen
             let g:NERDTreeMapHelp          =help
             let g:NERDTreeMapRefreshRoot   =refresh
-        " }
+        " }@}
 
-        " Tagbar {
+        " Tagbar {@{
             nmap <Leader>tb :TagbarToggle<CR>
-        " }
+        " }@}
 
-        " VimIndentGuides {
+        " VimIndentGuides {@{
             " 快捷键 i 开/关缩进可视化
             nmap <silent><Leader>ig <Plug>IndentGuidesToggle
-        " }
+        " }@}
 
-        " VimFswitch {
+        " VimFswitch {@{
             " *.cpp 和 *.h 间切换
             nmap <silent><Leader>sw :FSHere<cr>
-        " }
+        " }@}
 
-        " YouCompleteMe {
+        " YouCompleteMe {@{
             " 转到定义
             nnoremap <A-g> :YcmCompleter GoToDefinitionElseDeclaration<CR> 
-        " }
+        " }@}
 
-        " Slimv {
+        " Slimv {@{
             nmap <Leader>s ,
             nmap <Leader>sme ,,
-        " }
+        " }@}
 
-        " Ack {
+        " Ack {@{
             " https://github.com/mileszs/ack.vim/blob/master/doc/ack.txt
             " https://blog.csdn.net/Demorngel/article/details/71147697
             "map <Leader>ssearch :Ack<space>
             map <Leader>sf :Ack!<space>
-        " }
+        " }@}
 
-        " Ale {
+        " Ale {@{
             " https://github.com/w0rp/ale/blob/master/doc/ale.txt
             " https://blog.csdn.net/Demorngel/article/details/69052789
             " 普通模式下，sp前往上一个错误或警告，sn前往下一个错误或警告
@@ -397,12 +397,12 @@ endfunction
             nmap <Leader>s :ALEToggle<CR>
             " <Leader>d查看错误或警告的详细信息
             nmap <Leader>d :ALEDetail<CR>
-        " }
-    " }
-" }
+        " }@}
+    " }@}
+" }@}
 
 
-" Text Editor Config {
+" Text Editor Config {@{
     set nu!
 
     " 开启语法高亮功能
@@ -419,6 +419,8 @@ endfunction
 
     " 搜索时大小写不敏感
     set ignorecase
+    " 如果有一个大写字母，则切换到大小写敏感查找
+    set smartcase
 
     " 关闭兼容模式
     set nocompatible
@@ -469,18 +471,18 @@ endfunction
     "set foldmethod =syntax
     set foldmethod =marker
     set foldmarker ={@{,}@}
-" }
+" }@}
 
 
-" Editor Theme Config {
+" Editor Theme Config {@{
     "colorscheme molokai
     "colorscheme phd
 
-    " Solarized {
+    " Solarized {@{
         colorscheme solarized
         set background =dark
         let g:solarized_termcolors =256
-    " }
+    " }@}
 
     " 禁止光标闪烁
     "set gcr =a:block-blinkon0
@@ -494,10 +496,10 @@ endfunction
     " 禁止显示菜单和工具条
     set guioptions -=m
     set guioptions -=T
-" }
+" }@}
 
 
-" Editor Plugin Config {
+" Editor Plugin Config {@{
     if IsWindows()
         set rtp +=$VIM/vimfiles/bundle/Vundle.vim 
         call vundle#rc('$VIM/vimfiles/bundle/')
@@ -506,7 +508,7 @@ endfunction
         call vundle#rc()
     endif
 
-    " Plugins {
+    " Plugins {@{
         Plugin 'VundleVim/Vundle.vim.git'
         Plugin 'altercation/vim-colors-solarized.git'
         Plugin 'tomasr/molokai.git'
@@ -535,9 +537,9 @@ endfunction
             Plugin 'snakeleon/YouCompleteMe-x64'
         else
         endif
-    " }
+    " }@}
 
-    " Ctrlp {
+    " Ctrlp {@{
         "设置搜索时忽略的文件
         let g:ctrlp_custom_ignore ={
             \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',
@@ -550,14 +552,14 @@ endfunction
         let g:ctrlp_match_window_reversed=0
         let g:ctrlp_mruf_max=500
         let g:ctrlp_follow_symlinks=1
-    " }
+    " }@}
 
-    " CtrlpFunky {
+    " CtrlpFunky {@{
         let g:ctrlp_funky_syntax_highlight =1
         let g:ctrlp_extensions =['funky']
-    " }
+    " }@}
 
-    " NERDTree {
+    " NERDTree {@{
         " 在 vim 启动的时候默认开启 NERDTree（autocmd 可以缩写为 au）
         autocmd VimEnter * NERDTree
         " 将 NERDTree 的窗口设置在 vim 窗口的右侧（默认为左侧）
@@ -581,9 +583,9 @@ endfunction
         autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
         " 当vim中没有其他文件，只剩下nerdtree的时候，自动关闭窗口
         autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-    " }
+    " }@}
 
-    " NerdtreeGitPlugin {
+    " NerdtreeGitPlugin {@{
         let g:NERDTreeIndicatorMapCustom ={
             \ "Modified"  : "*",
             \ "Staged"    : "+",
@@ -596,9 +598,9 @@ endfunction
             \ "Ignored"   : "◎",
             \ "Unknown"   : "?"
             \ }
-    " }
+    " }@}
 
-    " VimIndentGuides {
+    " VimIndentGuides {@{
         " 随 vim 自启动
         let g:indent_guides_enable_on_vim_startup =1
 
@@ -607,9 +609,9 @@ endfunction
 
         " 色块宽度
         let g:indent_guides_guide_size =1
-    " }
+    " }@}
 
-    " YouCompleteMe {
+    " YouCompleteMe {@{
         if has("win32")
             "let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/bundle/YouCompleteMe-x86/python/.ycm_extra_conf.py'
         elseif has("win64")
@@ -649,10 +651,10 @@ endfunction
         set rtp +=$VIM/vimfiles/bundle/YouCompleteMe 
         let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
         "let g:ycm_path_to_python_interpreter = $PYTHON_HOME.'/python.exe"
-        let g:ycm_path_to_python_interpreter = 'F:/PROGRAM/technology/Python/python.exe'
-    " }
+        let g:ycm_path_to_python_interpreter = 'D:/Develop/Python27/python.exe'
+    " }@}
 
-    " Slimv {
+    " Slimv {@{
         if IsLinux()
             let g:slimv_swank_cmd ='! xterm -e sbcl --load /usr/share/common-lisp/source/slime/start-swank.lisp &'
         elseif IsWindows()
@@ -668,9 +670,9 @@ endfunction
         let g:paredit_mode =0
 
         let g:paredit_electric_return =1
-    " }
+    " }@}
 
-    " Ack {
+    " Ack {@{
         " 调用rg进行搜索
         if executable('rg')
             let g:ackprg = 'rg --vimgrep'
@@ -680,9 +682,9 @@ endfunction
         "    let g:ackprg = 'ag --vimgrep'
         "endif
         let g:ackhighlight = 1
-    " }
+    " }@}
 
-    " Ale {
+    " Ale {@{
         " 始终开启标志列
         let g:ale_sign_column_always = 1
         let g:ale_set_highlights = 0
@@ -695,6 +697,6 @@ endfunction
         let g:ale_echo_msg_error_str = 'E'
         let g:ale_echo_msg_warning_str = 'W'
         let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-    " }
-" }
+    " }@}
+" }@}
 
