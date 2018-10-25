@@ -168,42 +168,42 @@ endfunction
         let fssearch = "fsf"
     " }@}
 
-    " defined <Leader>
+    " defined <leader>
     let mapleader =";"
 
     " Vim's Function {@{
         " 文档操作 {@{
             " 设置快捷键将选中文本块复制至系统剪贴板
-            vnoremap <Leader>sy "+y
+            vnoremap <leader>sy "+y
 
             " 设置快捷键将系统剪贴板内容粘贴至 vim
-            nmap <Leader>sp "+p
+            nmap <leader>sp "+p
 
             " 定义快捷键关闭当前分割窗口
-            nmap <Leader>fq :q<CR>
-            nmap <Leader>fqa :qa<CR>
+            nmap <leader>fq :q<CR>
+            nmap <leader>fqa :qa<CR>
 
             " 不做任何保存，直接退出 vim
-            nmap <Leader>fQ :q!<CR>
-            nmap <Leader>fQA :qa!<CR>
+            nmap <leader>fQ :q!<CR>
+            nmap <leader>fQA :qa!<CR>
 
             " 定义快捷键保存当前窗口内容
-            nmap <Leader>fw :w<CR>
-            nmap <Leader>fwa :wa<CR>
-            nmap <Leader>fwq :wq<CR>
+            nmap <leader>fw :w<CR>
+            nmap <leader>fwa :wa<CR>
+            nmap <leader>fwq :wq<CR>
 
             " 定义快捷键保存所有窗口内容并退出 vim
-            nmap <Leader>fwqa :wa<CR>:q<CR>
+            nmap <leader>fwqa :wa<CR>:q<CR>
 
             " 打开当前文件所在位置
             nmap <leader>fo <ESC>:call OpenFileLocation()<CR>
 
             " 定义快捷键在结对符之间跳转
-            nmap <Leader>m %
+            nmap <leader>m %
 
             " 定义快捷键到行首和行尾
-            nmap <Leader>lb 0
-            nmap <Leader>le $
+            nmap <leader>lb 0
+            nmap <leader>le $
 
             " 用空格键来开关代码折叠
             nnoremap <leader><space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
@@ -219,86 +219,86 @@ endfunction
 
         " 窗口操作 {@{
             " 跳转至右方的窗口
-            nnoremap <Leader>lw <C-W>l
+            nnoremap <leader>lw <C-W>l
 
             " 跳转至左方的窗口
-            nnoremap <Leader>hw <C-W>h
+            nnoremap <leader>hw <C-W>h
 
             " 跳转至上方的子窗口
-            nnoremap <Leader>kw <C-W>k
+            nnoremap <leader>kw <C-W>k
 
             " 跳转至下方的子窗口
-            nnoremap <Leader>jw <C-W>j
+            nnoremap <leader>jw <C-W>j
 
             " 依次遍历子窗口
-            nnoremap <Leader>nw <C-W><C-W>
+            nnoremap <leader>nw <C-W><C-W>
 
             " 跳转到最左上角的窗口
-            nnoremap <Leader>tw <C-W>t
+            nnoremap <leader>tw <C-W>t
 
             " 跳转到最右下角的窗口
-            nnoremap <Leader>bw <C-W>b
+            nnoremap <leader>bw <C-W>b
 
             " 跳转到前一个访问的窗口
-            nnoremap <Leader>pw <C-W>p
+            nnoremap <leader>pw <C-W>p
 
             " 移动窗口至屏幕底端，并占用全部宽度
-            nmap <Leader>wj <C-W>J
+            nmap <leader>wj <C-W>J
 
             " 移动窗口至屏幕顶端，并占用全部宽度
-            nmap <Leader>wk <C-W>K
+            nmap <leader>wk <C-W>K
 
             " 移动窗口至屏幕左端，并占用全部高度
-            nmap <Leader>wh <C-W>H
+            nmap <leader>wh <C-W>H
 
             " 移动窗口至屏幕右端，并占用全部高=
-            nmap <Leader>wl <C-W>L
+            nmap <leader>wl <C-W>L
 
             " 调整窗口大小
-            nmap <Leader>ws3 :resize +16<CR>
-            nmap <Leader>ws4 :resize -16<CR>
-            nmap <Leader>ws1 :vertical resize +16<CR>
-            nmap <Leader>ws2 :vertical resize -16<CR>
+            nmap <leader>ws3 :resize +16<CR>
+            nmap <leader>ws4 :resize -16<CR>
+            nmap <leader>ws1 :vertical resize +16<CR>
+            nmap <leader>ws2 :vertical resize -16<CR>
 
             " 微调窗口大小
-            nmap <Leader>w1 <C-W>>
-            nmap <Leader>w2 <C-W><
-            nmap <Leader>w3 <C-W>+
-            nmap <Leader>w4 <C-W>-
+            nmap <leader>w1 <C-W>>
+            nmap <leader>w2 <C-W><
+            nmap <leader>w3 <C-W>+
+            nmap <leader>w4 <C-W>-
 
             " 将当前窗口的宽度调到最大
-            nmap <Leader>w[ <C-W>|
+            nmap <leader>w[ <C-W>|
 
             " 将当前窗口的宽度调到最小
-            nmap <Leader>w] <C-W>1|
+            nmap <leader>w] <C-W>1|
 
             " 让所有窗口调整至相同尺寸
-            nmap <Leader>w' <C-W>=
+            nmap <leader>w' <C-W>=
         " }@}
 
         " 标签操作 {@{
             " 新建标签
-            nmap <Leader>tn :tabnew
+            nmap <leader>tn :tabnew
 
             " 关闭标签
-            nmap <Leader>tc :tabc
+            nmap <leader>tc :tabc
 
             " 在新标签中打开当前缓冲区中的文件
-            nmap <Leader>to :tab split
+            nmap <leader>to :tab split
 
             " 跳转到下/上一个标签: gt gT
 
             " 跳转到第一个标签
-            nmap <Leader>tf :tabfirst
+            nmap <leader>tf :tabfirst
 
             " 跳转到最后一个标签
-            nmap <Leader>tl :tablast
+            nmap <leader>tl :tablast
 
             " 移动标签
-            "nmap <Leader>tm :tabm 1
+            "nmap <leader>tm :tabm 1
 
             " 显示标签列表
-            nmap <Leader>ts :tabs
+            nmap <leader>ts :tabs
         " }@}
 
         " 切换当前目录为正在编辑的文件所在目录
@@ -313,10 +313,10 @@ endfunction
             let g:ctrlp_cmd ='CtrlP'
 
             " 搜索MRU文件
-            map <leader>pf :CtrlPMRU<CR>
+            nmap <leader>pf :CtrlPMRU<CR>
 
             " 显示缓冲区文件，并可通过序号进行跳转
-            nmap <Leader>pb :CtrlPBuffer<CR>
+            nmap <leader>pb :CtrlPBuffer<CR>
 
             " 上下分屏打开文件
             nmap <CR>h :<CR>x
@@ -324,22 +324,22 @@ endfunction
 
         " CtrlpFunky {@{
             " 进入当前文件的函数列表搜索
-            nnoremap <Leader>fu :CtrlPFunky<Cr>
+            nnoremap <leader>fu :CtrlPFunky<Cr>
 
             " narrow the list down with a word under cursor
-            nnoremap <Leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
+            nnoremap <leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
         " }@}
 
         " NERDTree {@{
             " https://github.com/scrooloose/nerdtree/blob/master/doc/NERDTree.txt
             " 打开/关闭NERDTree
-            nmap <Leader>nt :NERDTreeToggle<CR>
+            nmap <leader>nt :NERDTreeToggle<CR>
 
             " 将NERDTree定位到当前文件的目录
-            nmap <Leader>nf :NERDTreeFind<CR>
+            nmap <leader>nf :NERDTreeFind<CR>
 
             " 将当前所在node加入书签
-            nmap <Leader>nbm :Bookmark<CR>
+            nmap <leader>nbm :Bookmark<CR>
 
             let g:NERDTreeMapActivateNode  =open
             let g:NERDTreeMapPreview       =sopen
@@ -357,17 +357,17 @@ endfunction
         " }@}
 
         " Tagbar {@{
-            nmap <Leader>tb :TagbarToggle<CR>
+            nmap <leader>tb :TagbarToggle<CR>
         " }@}
 
         " VimIndentGuides {@{
             " 快捷键 i 开/关缩进可视化
-            nmap <silent><Leader>ig <Plug>IndentGuidesToggle
+            nmap <silent><leader>ig <Plug>IndentGuidesToggle
         " }@}
 
         " VimFswitch {@{
             " *.cpp 和 *.h 间切换
-            nmap <silent><Leader>sw :FSHere<cr>
+            nmap <silent><leader>sw :FSHere<cr>
         " }@}
 
         " YouCompleteMe {@{
@@ -376,15 +376,21 @@ endfunction
         " }@}
 
         " Slimv {@{
-            nmap <Leader>s ,
-            nmap <Leader>sme ,,
+            nmap <leader>s ,
+            nmap <leader>sme ,,
         " }@}
 
         " Ack {@{
             " https://github.com/mileszs/ack.vim/blob/master/doc/ack.txt
             " https://blog.csdn.net/Demorngel/article/details/71147697
-            "map <Leader>ssearch :Ack<space>
-            map <Leader>sf :Ack!<space>
+            "map <leader>ssearch :Ack<space>
+            "map <leader>sf :Ack!<space>
+        " }@}
+
+        " CtrlSF {@{
+            " https://github.com/dyng/ctrlsf.vim/blob/master/doc/ctrlsf.txt
+            " https://www.cnblogs.com/yuehq/p/4067817.html
+            nmap <leader>sf :CtrlSF
         " }@}
 
         " Ale {@{
@@ -393,10 +399,10 @@ endfunction
             " 普通模式下，sp前往上一个错误或警告，sn前往下一个错误或警告
             nmap sp <Plug>(ale_previous_wrap)
             nmap sn <Plug>(ale_next_wrap)
-            " <Leader>s触发/关闭语法检查
-            nmap <Leader>s :ALEToggle<CR>
-            " <Leader>d查看错误或警告的详细信息
-            nmap <Leader>d :ALEDetail<CR>
+            " <leader>s触发/关闭语法检查
+            nmap <leader>s :ALEToggle<CR>
+            " <leader>d查看错误或警告的详细信息
+            nmap <leader>d :ALEDetail<CR>
         " }@}
     " }@}
 " }@}
@@ -527,10 +533,14 @@ endfunction
         Plugin 'scrooloose/nerdcommenter.git'
         Plugin 'Valloric/YouCompleteMe.git'
         Plugin 'kovisoft/slimv.git'      " lisp support
+        " lua
         Plugin 'xolox/vim-misc'          " required by lua.vim
         Plugin 'xolox/vim-lua-ftplugin'  " lua file type plug-in for the vim text editor
+        " global keyword search
         Plugin 'mileszs/ack.vim'
+        Plugin 'dyng/ctrlsf.vim'
         Plugin 'w0rp/ale'
+        Plugin 'terryma/vim-multiple-cursors'
         if has("win32")
             "Plugin 'snakeleon/YouCompleteMe-x86'
         elseif has("win64")
@@ -673,15 +683,21 @@ endfunction
     " }@}
 
     " Ack {@{
-        " 调用rg进行搜索
+    " references: https://blog.csdn.net/Demorngel/article/details/71147697
+        " 调用rg进行搜索, https://segmentfault.com/a/1190000016170184
         if executable('rg')
             let g:ackprg = 'rg --vimgrep'
         endif
-        "" 调用ag进行搜索
+        " 调用ag进行搜索
         "if executable('ag')
         "    let g:ackprg = 'ag --vimgrep'
         "endif
         let g:ackhighlight = 1
+    " }@}
+
+    " CtrlSF {@{
+        "let g:ctrlsf_search_mode = 'async'
+        let g:ctrlsf_winsize = '20%'
     " }@}
 
     " Ale {@{
