@@ -106,7 +106,7 @@ endfunction
     set listchars=eol:┐,trail:┐,tab:>-,nbsp:.,precedes:«,extends:»
 
     " 打开文件的同时，自动切换当前路径
-    autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
+    " autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
 " }@}
 
 
@@ -390,7 +390,10 @@ endfunction
         " CtrlSF {@{
             " https://github.com/dyng/ctrlsf.vim/blob/master/doc/ctrlsf.txt
             " https://www.cnblogs.com/yuehq/p/4067817.html
-            nmap <leader>sf :CtrlSF
+            nmap <leader>sf :CtrlSF<space>
+            nmap <leader>sft :CtrlSFToggle<cr>
+            nmap <leader>sfvw :CtrlSFVwordPath
+            nmap <leader>sfcw :CtrlSFCwordPath
         " }@}
 
         " Ale {@{
@@ -536,7 +539,7 @@ endfunction
         " lua
         Plugin 'xolox/vim-misc'          " required by lua.vim
         Plugin 'xolox/vim-lua-ftplugin'  " lua file type plug-in for the vim text editor
-        " global keyword search
+        " global string search
         Plugin 'mileszs/ack.vim'
         Plugin 'dyng/ctrlsf.vim'
         Plugin 'w0rp/ale'
