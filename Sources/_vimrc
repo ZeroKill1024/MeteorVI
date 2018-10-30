@@ -392,8 +392,9 @@ endfunction
             " https://www.cnblogs.com/yuehq/p/4067817.html
             nmap <leader>sf :CtrlSF<space>
             nmap <leader>sft :CtrlSFToggle<cr>
-            nmap <leader>sfvw :CtrlSFVwordPath
-            nmap <leader>sfcw :CtrlSFCwordPath
+            vmap <leader>sfv <Plug>CtrlSFVwordExec
+            nmap <leader>sfc <Plug>CtrlSFCwordPath
+            nmap <leader>sfl <Plug>CtrlSFPwordPath
         " }@}
 
         " Ale {@{
@@ -536,12 +537,16 @@ endfunction
         Plugin 'scrooloose/nerdcommenter.git'
         Plugin 'Valloric/YouCompleteMe.git'
         Plugin 'kovisoft/slimv.git'      " lisp support
-        " lua
+        " lua support
         Plugin 'xolox/vim-misc'          " required by lua.vim
         Plugin 'xolox/vim-lua-ftplugin'  " lua file type plug-in for the vim text editor
         " global string search
         Plugin 'mileszs/ack.vim'
         Plugin 'dyng/ctrlsf.vim'
+        " golang support, reference: https://blog.csdn.net/zhang197093/article/details/78559903?locationNum=5&fps=1
+        Plugin 'fatih/vim-go'
+        Plugin 'nsf/gocode', {'rtp': 'vim/'}
+        " others
         Plugin 'w0rp/ale'
         Plugin 'terryma/vim-multiple-cursors'
         if has("win32")
