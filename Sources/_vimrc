@@ -421,8 +421,8 @@ endfunction
     " 允许用指定语法高亮配色方案替换默认方案
     syntax on
 
-    "set guifont=Consolas:h10
-    set guifont =Monaco:h10
+    set guifont=Consolas:h16
+    "set guifont =Monaco:h16
 
     " 开启实时搜索功能
     set incsearch
@@ -536,7 +536,8 @@ endfunction
         Plugin 'derekwyatt/vim-protodef.git'
         Plugin 'scrooloose/nerdcommenter.git'
         Plugin 'Valloric/YouCompleteMe.git'
-        Plugin 'kovisoft/slimv.git'      " lisp support
+        " lisp support
+        Plugin 'kovisoft/slimv.git'
         " lua support
         Plugin 'xolox/vim-misc'          " required by lua.vim
         Plugin 'xolox/vim-lua-ftplugin'  " lua file type plug-in for the vim text editor
@@ -549,6 +550,7 @@ endfunction
         " others
         Plugin 'w0rp/ale'
         Plugin 'terryma/vim-multiple-cursors'
+        Plugin 'lyokha/vim-xkbswitch'
         if has("win32")
             "Plugin 'snakeleon/YouCompleteMe-x86'
         elseif has("win64")
@@ -704,8 +706,8 @@ endfunction
     " }@}
 
     " CtrlSF {@{
-        "let g:ctrlsf_search_mode = 'async'
-        let g:ctrlsf_winsize = '20%'
+        let g:ctrlsf_search_mode = 'async'
+        let g:ctrlsf_winsize = "20%"
     " }@}
 
     " Ale {@{
