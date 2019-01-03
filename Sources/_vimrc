@@ -1,43 +1,54 @@
-source $VIMRUNTIME/vimrc_example.vim
-source $VIMRUNTIME/mswin.vim
-behave mswin
 
 " functions {@{
+function IsLinux()
+    return (has('unix') && !has('macunix') && !has('win32unix'))
+endfunction
+function IsWindows()
+    return (has('win32') || has('win64'))
+endfunction
+function IsOSX()
+    return has('macunix')
+endfunction
+
 set diffexpr=MyDiff()
 function MyDiff()
-  let opt = '-a --binary '
-  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-  let arg1 = v:fname_in
-  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-  let arg2 = v:fname_new
-  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-  let arg3 = v:fname_out
-  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-  if $VIMRUNTIME =~ ' '
-    if &sh =~ '\<cmd'
-      if empty(&shellxquote)
-        let l:shxq_sav = ''
-        set shellxquote&
-      endif
-      let cmd = '"' . $VIMRUNTIME . '\diff"'
-    else
-      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+    if IsWindows()
+        let opt = '-a --binary '
+        if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+        if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+        let arg1 = v:fname_in
+        if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+        let arg2 = v:fname_new
+        if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+        let arg3 = v:fname_out
+        if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+        if $VIMRUNTIME =~ ' '
+            if &sh =~ '\<cmd'
+                if empty(&shellxquote)
+                    let l:shxq_sav = ''
+                    set shellxquote&
+                endif
+                let cmd = '"' . $VIMRUNTIME . '\diff"'
+            else
+                let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+            endif
+        else
+            let cmd = $VIMRUNTIME . '\diff'
+        endif
+        silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
+        if exists('l:shxq_sav')
+            let &shellxquote=l:shxq_sav
+        endif
     endif
-  else
-    let cmd = $VIMRUNTIME . '\diff'
-  endif
-  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
-  if exists('l:shxq_sav')
-    let &shellxquote=l:shxq_sav
-  endif
 endfunction
 
 function OpenFileLocation()
-    if ( expand("%") != "" )
-        execute "!start explorer /select, %"
-    else
-        execute "!start explorer /select, %:p:h"
+    if IsWindows()
+        if ( expand("%") != "" )
+            execute "!start explorer /select, %"
+        else
+            execute "!start explorer /select, %:p:h"
+        endif
     endif
 endfunction
 " }@}
@@ -49,22 +60,25 @@ endfunction
 "             https://github.com/spf13/spf13-vim
 "
 " General Config {@{
-    function IsLinux()
-        return (has('unix') && !has('macunix') && !has('win32unix'))
-    endfunction
-    function IsWindows()
-        return (has('win32') || has('win64'))
-    endfunction
-    function IsOSX()
-        return has('macunix')
-    endfunction
+    if IsWindows()
+        source $VIMRUNTIME/vimrc_example.vim
+        source $VIMRUNTIME/mswin.vim
+        behave mswin
+    endif
+
+    " dos和unix格式：https://blog.csdn.net/lovelirui/article/details/6282940
+    " 如果你使用windows上的vim，并且希望你的会话文件可以同时被windows版本的vim和UNIX版本的vim共同使用的话，
+    " 在‘sessionoptions’中加入‘slash’和‘unix’，前者把文件名中的’\'替换为’/'，后者会把会话文件的换行符保存成unix格式
+    set sessionoptions +=unix,slash
 " }@}
 
 
 " System Config {@{
     " =右边不可有空格，否则不能识别
-    " automatic full screen at startup
-    autocmd GUIEnter * simalt ~x
+    if IsWindows()
+        " automatic full screen at startup
+        autocmd GUIEnter * simalt ~x
+    endif
 
     " support utf-8
     if has("multi_byte")
@@ -101,7 +115,7 @@ endfunction
     set nobackup
     set noswapfile
 
-    " 显示非可见字符
+    " 显示不可见字符
     "set list
     "set listchars=eol:┐,trail:┐,tab:>-,nbsp:.,precedes:«,extends:»
 
@@ -513,12 +527,19 @@ endfunction
 
 
 " Editor Plugin Config {@{
+    " first step (win | mac):
+    " git clone https://github.com/VundleVim/Vundle.vim.git [%VIM%/vimfiles/bundle/Vundle.vim | ~/.vim/plugin/Vundle.vim]
+    " then :PluginInstall
+    set nocompatible              " be iMproved, required
+    filetype off                  " required
+
+    " set the runtime path to include Vundle and initialize
     if IsWindows()
         set rtp +=$VIM/vimfiles/bundle/Vundle.vim 
-        call vundle#rc('$VIM/vimfiles/bundle/')
+        call vundle#begin('$VIM/vimfiles/bundle/')
     else
-        set rtp +=~/.vim/bundle/Vundle.vim 
-        call vundle#rc()
+        set rtp +=~/.vim/plugin/Vundle.vim 
+        call vundle#begin()
     endif
 
     " Plugins {@{
@@ -566,6 +587,10 @@ endfunction
             Plugin 'snakeleon/YouCompleteMe-x64'
         else
         endif
+
+        " All of your Plugins must be added before the following line
+        call vundle#end()            " required
+        filetype plugin indent on    " required
     " }@}
 
     " Ctrlp {@{
@@ -646,7 +671,7 @@ endfunction
         elseif has("win64")
             let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/bundle/YouCompleteMe-x64/python/.ycm_extra_conf.py'
         else
-            let g:ycm_global_ycm_extra_conf = $HOME.'/.vim/bundle/YouCompleteMe/python/.ycm_extra_conf.py'
+            let g:ycm_global_ycm_extra_conf = $HOME.'/.vim/plugin/YouCompleteMe/python/.ycm_extra_conf.py'
         endif
 
         "" YCM 补全菜单配色
@@ -677,10 +702,12 @@ endfunction
         "" 引入 C++ 标准库tags
         "set tags+=/data/misc/software/misc./vim/stdcpp.tags
 
-        set rtp +=$VIM/vimfiles/bundle/YouCompleteMe 
-        let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-        "let g:ycm_path_to_python_interpreter = $PYTHON_HOME.'/python.exe"
-        let g:ycm_path_to_python_interpreter = 'D:/Develop/Python27/python.exe'
+        if IsWindows()
+            set rtp +=$VIM/vimfiles/bundle/YouCompleteMe 
+            let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+            "let g:ycm_path_to_python_interpreter = $PYTHON_HOME.'/python.exe"
+            let g:ycm_path_to_python_interpreter = 'D:/Develop/Python27/python.exe'
+        endif
     " }@}
 
     " Slimv {@{
@@ -778,7 +805,7 @@ endfunction
         nmap <Leader>f <Plug>(easymotion-overwin-f)
 
         " s{char}{char} to move to {char}{char}
-        nmap s <Plug>(easymotion-overwin-f2)
+        nmap <Leader>s <Plug>(easymotion-overwin-f2)
 
         " Move to line
         map <Leader>L <Plug>(easymotion-bd-jk)
