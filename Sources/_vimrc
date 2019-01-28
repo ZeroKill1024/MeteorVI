@@ -292,27 +292,27 @@ endfunction
 
         " 标签操作 {@{
             " 新建标签
-            nmap <leader>tn :tabnew
+            nmap <leader>tn :tabnew<CR>
 
             " 关闭标签
-            nmap <leader>tc :tabc
+            nmap <leader>tc :tabc<CR>
 
             " 在新标签中打开当前缓冲区中的文件
-            nmap <leader>to :tab split
+            nmap <leader>to :tab split<CR>
 
             " 跳转到下/上一个标签: gt gT
 
             " 跳转到第一个标签
-            nmap <leader>tf :tabfirst
+            nmap <leader>tf :tabfirst<CR>
 
             " 跳转到最后一个标签
-            nmap <leader>tl :tablast
+            nmap <leader>tl :tablast<CR>
 
             " 移动标签
             "nmap <leader>tm :tabm 1
 
             " 显示标签列表
-            nmap <leader>ts :tabs
+            nmap <leader>ts :tabs<CR>
         " }@}
 
         " 切换当前目录为正在编辑的文件所在目录
