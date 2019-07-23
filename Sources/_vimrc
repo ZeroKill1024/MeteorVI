@@ -1,55 +1,19 @@
-
 " functions {@{
 function IsLinux()
-    return (has('unix') && !has('macunix') && !has('win32unix'))
+return (has('unix') && !has('macunix') && !has('win32unix'))
 endfunction
 function IsWindows()
-    return (has('win32') || has('win64'))
+return (has('win32') || has('win64'))
 endfunction
 function IsOSX()
-    return has('macunix')
+return has('macunix')
 endfunction
 
 set diffexpr=MyDiff()
 function MyDiff()
-    if IsWindows()
-        let opt = '-a --binary '
-        if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-        if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-        let arg1 = v:fname_in
-        if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-        let arg2 = v:fname_new
-        if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-        let arg3 = v:fname_out
-        if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-        if $VIMRUNTIME =~ ' '
-            if &sh =~ '\<cmd'
-                if empty(&shellxquote)
-                    let l:shxq_sav = ''
-                    set shellxquote&
-                endif
-                let cmd = '"' . $VIMRUNTIME . '\diff"'
-            else
-                let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-            endif
-        else
-            let cmd = $VIMRUNTIME . '\diff'
-        endif
-        silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
-        if exists('l:shxq_sav')
-            let &shellxquote=l:shxq_sav
-        endif
-    endif
 endfunction
 
 function OpenFileLocation()
-    if IsWindows()
-        if ( expand("%") != "" )
-            execute "!start explorer /select, %"
-        else
-            execute "!start explorer /select, %:p:h"
-        endif
-    endif
 endfunction
 " }@}
 
@@ -58,26 +22,23 @@ endfunction
 " references: https://github.com/wsdjeg/vim-galore-zh_cn
 "             https://github.com/yangyangwithgnu/use_vim_as_ide
 "             https://github.com/spf13/spf13-vim
-"
-" General Config {@{
-    if IsWindows()
-        source $VIMRUNTIME/vimrc_example.vim
-        source $VIMRUNTIME/mswin.vim
-        behave mswin
-    endif
+"             https://www.jianshu.com/p/923aec861af3(for mac)
+"             https://www.zhihu.com/question/47691414
 
-    " dos和unix格式：https://blog.csdn.net/lovelirui/article/details/6282940
-    " 如果你使用windows上的vim，并且希望你的会话文件可以同时被windows版本的vim和UNIX版本的vim共同使用的话，
-    " 在‘sessionoptions’中加入‘slash’和‘unix’，前者把文件名中的’\'替换为’/'，后者会把会话文件的换行符保存成unix格式
-    set sessionoptions +=unix,slash
+" General Config {@{
 " }@}
 
+if IsWindows()
+   source $VIMRUNTIME/vimrc_example.vim
+   source $VIMRUNTIME/mswin.vim
+   behave mswin
+endif
 
 " System Config {@{
     " =右边不可有空格，否则不能识别
+    " automatic full screen at startup
     if IsWindows()
-        " automatic full screen at startup
-        autocmd GUIEnter * simalt ~x
+	autocmd GUIEnter * simalt ~x
     endif
 
     " support utf-8
@@ -115,7 +76,7 @@ endfunction
     set nobackup
     set noswapfile
 
-    " 显示不可见字符
+    " 显示非可见字符
     "set list
     "set listchars=eol:┐,trail:┐,tab:>-,nbsp:.,precedes:«,extends:»
 
@@ -292,27 +253,27 @@ endfunction
 
         " 标签操作 {@{
             " 新建标签
-            nmap <leader>tn :tabnew<CR>
+            nmap <leader>tn :tabnew
 
             " 关闭标签
-            nmap <leader>tc :tabc<CR>
+            nmap <leader>tc :tabc
 
             " 在新标签中打开当前缓冲区中的文件
-            nmap <leader>to :tab split<CR>
+            nmap <leader>to :tab split
 
             " 跳转到下/上一个标签: gt gT
 
             " 跳转到第一个标签
-            nmap <leader>tf :tabfirst<CR>
+            nmap <leader>tf :tabfirst
 
             " 跳转到最后一个标签
-            nmap <leader>tl :tablast<CR>
+            nmap <leader>tl :tablast
 
             " 移动标签
             "nmap <leader>tm :tabm 1
 
             " 显示标签列表
-            nmap <leader>ts :tabs<CR>
+            nmap <leader>ts :tabs
         " }@}
 
         " 切换当前目录为正在编辑的文件所在目录
@@ -498,6 +459,9 @@ endfunction
 
     " 设置不自动折行
     set nowrap
+
+    " 设置索引文件位置
+    set tags=./.tags;,.tags
 " }@}
 
 
@@ -527,71 +491,74 @@ endfunction
 
 
 " Editor Plugin Config {@{
-    " first step (win | mac):
-    " git clone https://github.com/VundleVim/Vundle.vim.git [%VIM%/vimfiles/bundle/Vundle.vim | ~/.vim/plugin/Vundle.vim]
-    " then :PluginInstall
-    set nocompatible              " be iMproved, required
-    filetype off                  " required
-
-    " set the runtime path to include Vundle and initialize
+    " Specify a directory for plugins
+    " - For Neovim: ~/.local/share/nvim/plugged
+    " - Avoid using standard Vim directory names like 'plugin'
     if IsWindows()
-        set rtp +=$VIM/vimfiles/bundle/Vundle.vim 
-        call vundle#begin('$VIM/vimfiles/bundle/')
+        call plug#begin('$VIM/vimfiles/plugged/')
     else
-        set rtp +=~/.vim/plugin/Vundle.vim 
-        call vundle#begin()
+        if empty(glob('~/.vim/autoload/plug.vim'))
+            silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+                        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+            autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+        endif
+        call plug#begin('~/.vim/plugged')
     endif
 
     " Plugins {@{
-        Plugin 'VundleVim/Vundle.vim.git'
-        Plugin 'altercation/vim-colors-solarized.git'
-        Plugin 'tomasr/molokai.git'
-        Plugin 'vim-scripts/phd'
-        Plugin 'scrooloose/nerdtree.git'
-        Plugin 'Xuyuanp/nerdtree-git-plugin.git'
-        Plugin 'kien/ctrlp.vim.git'
-        Plugin 'tacahiroy/ctrlp-funky.git'
-        Plugin 'lilydjwg/fcitx.vim.git'
-        Plugin 'majutsushi/tagbar.git'
-        Plugin 'vim-airline/vim-airline.git'
-        Plugin 'nathanaelkane/vim-indent-guides.git'
-        Plugin 'octol/vim-cpp-enhanced-highlight.git'
-        Plugin 'derekwyatt/vim-fswitch.git'
-        Plugin 'derekwyatt/vim-protodef.git'
-        Plugin 'scrooloose/nerdcommenter.git'
-        Plugin 'Valloric/YouCompleteMe.git'
+        " Make sure you use single quotes
+        Plug 'altercation/vim-colors-solarized'
+        Plug 'tomasr/molokai'
+        Plug 'vim-scripts/phd'
+        Plug 'scrooloose/nerdtree'
+        Plug 'Xuyuanp/nerdtree-git-plugin'
+        Plug 'kien/ctrlp.vim'
+        Plug 'tacahiroy/ctrlp-funky'
+        Plug 'lilydjwg/fcitx.vim'
+        Plug 'vim-airline/vim-airline'
+        Plug 'nathanaelkane/vim-indent-guides'
+        Plug 'octol/vim-cpp-enhanced-highlight'
+        Plug 'derekwyatt/vim-fswitch'
+        Plug 'derekwyatt/vim-protodef'
+        Plug 'scrooloose/nerdcommenter'
+        Plug 'Valloric/YouCompleteMe'
         " lisp support
-        Plugin 'kovisoft/slimv.git'
+        Plug 'kovisoft/slimv'
         " lua support
-        Plugin 'xolox/vim-misc'          " required by lua.vim
-        Plugin 'xolox/vim-lua-ftplugin'  " lua file type plug-in for the vim text editor
+        Plug 'xolox/vim-misc'          " required by lua.vim
+        Plug 'xolox/vim-lua-ftplugin'  " lua file type plug-in for the vim text editor
         " global string search
-        Plugin 'mileszs/ack.vim'
-        Plugin 'dyng/ctrlsf.vim'
+        Plug 'mileszs/ack.vim'
+        Plug 'dyng/ctrlsf.vim'
         " golang support, reference: https://blog.csdn.net/zhang197093/article/details/78559903?locationNum=5&fps=1
-        Plugin 'fatih/vim-go'
-        Plugin 'nsf/gocode', {'rtp': 'vim/'}
+        Plug 'fatih/vim-go'
+        Plug 'nsf/gocode', {'rtp': 'vim/'}
+        " git support
+        Plug 'tpope/vim-fugitive'
         " eiditor
-        Plugin 'luochen1990/rainbow'
-        Plugin 'haya14busa/incsearch.vim'
-        Plugin 'easymotion/vim-easymotion'
-        Plugin 'andymass/vim-matchup'
-        Plugin 'qstrahl/vim-matchmaker'
+        Plug 'luochen1990/rainbow'
+        Plug 'haya14busa/incsearch.vim'
+        Plug 'easymotion/vim-easymotion'
+        Plug 'andymass/vim-matchup'
+        Plug 'qstrahl/vim-matchmaker'
         " others
-        Plugin 'w0rp/ale'
-        Plugin 'terryma/vim-multiple-cursors'
+        Plug 'w0rp/ale'
+        Plug 'terryma/vim-multiple-cursors'
         "Plugin 'lyokha/vim-xkbswitch'
         if has("win32")
             "Plugin 'snakeleon/YouCompleteMe-x86'
         elseif has("win64")
-            Plugin 'snakeleon/YouCompleteMe-x64'
+            Plug 'snakeleon/YouCompleteMe-x64'
         else
         endif
-
-        " All of your Plugins must be added before the following line
-        call vundle#end()            " required
-        filetype plugin indent on    " required
+        " text
+        Plug 'ludovicchabant/vim-gutentags'
+        Plug 'vim-scripts/taglist.vim' " TODO: choose one
+        Plug 'majutsushi/tagbar'  " TODO: choose one
+        Plug 'Yggdroot/LeaderF'  " TODO: choose one
     " }@}
+    " Initialize plugin system
+    call plug#end()
 
     " Ctrlp {@{
         "设置搜索时忽略的文件
@@ -667,11 +634,11 @@ endfunction
 
     " YouCompleteMe {@{
         if has("win32")
-            "let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/bundle/YouCompleteMe-x86/python/.ycm_extra_conf.py'
+            "let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/plugged/YouCompleteMe-x86/python/.ycm_extra_conf.py'
         elseif has("win64")
-            let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/bundle/YouCompleteMe-x64/python/.ycm_extra_conf.py'
+            let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/plugged/YouCompleteMe-x64/python/.ycm_extra_conf.py'
         else
-            let g:ycm_global_ycm_extra_conf = $HOME.'/.vim/plugin/YouCompleteMe/python/.ycm_extra_conf.py'
+            let g:ycm_global_ycm_extra_conf = $HOME.'/.vim/plugged/YouCompleteMe/python/.ycm_extra_conf.py'
         endif
 
         "" YCM 补全菜单配色
@@ -703,19 +670,21 @@ endfunction
         "set tags+=/data/misc/software/misc./vim/stdcpp.tags
 
         if IsWindows()
-            set rtp +=$VIM/vimfiles/bundle/YouCompleteMe 
-            let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-            "let g:ycm_path_to_python_interpreter = $PYTHON_HOME.'/python.exe"
-            let g:ycm_path_to_python_interpreter = 'D:/Develop/Python27/python.exe'
-        endif
+            set rtp +='$VIM/vimfiles/plugged/plugged/YouCompleteMe'
+        else
+            set rtp +='~/.vim/plugged' 
+        end
+        let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+        "let g:ycm_path_to_python_interpreter = $PYTHON_HOME.'/python.exe"
+        let g:ycm_path_to_python_interpreter = 'D:/Develop/Python27/python.exe'
     " }@}
 
     " Slimv {@{
         if IsLinux()
             let g:slimv_swank_cmd ='! xterm -e sbcl --load /usr/share/common-lisp/source/slime/start-swank.lisp &'
         elseif IsWindows()
-            let g:slimv_swank_cmd ='!start "D:/Develop/ccl19/wx86cl.exe" -l' . $VIM.'/vimfiles/bundle/slimv/slime/start-swank.lisp'
-            "let g:slimv_swank_cmd ='!start "D:/Develop/Steel Bank Common Lisp/1.3.1/sbcl.exe" --load' . $VIM.'/vimfiles/bundle/slimv/slime/start-swank.lisp'
+            let g:slimv_swank_cmd ='!start "D:/Develop/ccl19/wx86cl.exe" -l' . $VIM.'/vimfiles/plugged/slimv/slime/start-swank.lisp'
+            "let g:slimv_swank_cmd ='!start "D:/Develop/Steel Bank Common Lisp/1.3.1/sbcl.exe" --load' . $VIM.'/vimfiles/plugged/bundle/slimv/slime/start-swank.lisp'
         endif
 
         " enabled rainbow parenthesis
@@ -805,7 +774,7 @@ endfunction
         nmap <Leader>f <Plug>(easymotion-overwin-f)
 
         " s{char}{char} to move to {char}{char}
-        nmap <Leader>s <Plug>(easymotion-overwin-f2)
+        nmap s <Plug>(easymotion-overwin-f2)
 
         " Move to line
         map <Leader>L <Plug>(easymotion-bd-jk)
@@ -825,5 +794,26 @@ endfunction
         let g:matchmaker_ignore_single_match = 1
         let g:matchmaker_matchpriority = 0
     " }@}
-" }@}
 
+    " gutentags {@{
+        " gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
+        let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
+
+        " 所生成的数据文件的名称
+        let g:gutentags_ctags_tagfile = '.tags'
+
+        " 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
+        let s:vim_tags = expand('~/.cache/tags')
+        let g:gutentags_cache_dir = s:vim_tags
+
+        " 配置 ctags 的参数
+        let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+        let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+        let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+
+        " 检测 ~/.cache/tags 不存在就新建
+        if !isdirectory(s:vim_tags)
+            silent! call mkdir(s:vim_tags, 'p')
+        endif
+    " }@}
+" }@}
