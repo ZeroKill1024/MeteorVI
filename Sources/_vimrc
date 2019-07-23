@@ -281,30 +281,6 @@ endif
     " }@}
 
     " Plugins's Function {@{
-        " https://github.com/kien/ctrlp.vim/blob/master/doc/ctrlp.txt
-        " Ctrlp {@{
-            " 搜索当前目录下文件
-            let g:ctrlp_map ='<leader>p'
-            let g:ctrlp_cmd ='CtrlP'
-
-            " 搜索MRU文件
-            nmap <leader>pf :CtrlPMRU<CR>
-
-            " 显示缓冲区文件，并可通过序号进行跳转
-            nmap <leader>pb :CtrlPBuffer<CR>
-
-            " 上下分屏打开文件
-            nmap <CR>h :<CR>x
-        " }@}
-
-        " CtrlpFunky {@{
-            " 进入当前文件的函数列表搜索
-            nnoremap <leader>fu :CtrlPFunky<Cr>
-
-            " narrow the list down with a word under cursor
-            nnoremap <leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
-        " }@}
-
         " NERDTree {@{
             " https://github.com/scrooloose/nerdtree/blob/master/doc/NERDTree.txt
             " 打开/关闭NERDTree
@@ -329,10 +305,6 @@ endif
             let g:NERDTreeMapToggleZoom    =FullScreen
             let g:NERDTreeMapHelp          =help
             let g:NERDTreeMapRefreshRoot   =refresh
-        " }@}
-
-        " Tagbar {@{
-            nmap <leader>tb :TagbarToggle<CR>
         " }@}
 
         " VimIndentGuides {@{
@@ -520,8 +492,6 @@ endif
         Plug 'vim-scripts/phd'
         Plug 'scrooloose/nerdtree'
         Plug 'Xuyuanp/nerdtree-git-plugin'
-        Plug 'kien/ctrlp.vim'
-        Plug 'tacahiroy/ctrlp-funky'
         Plug 'lilydjwg/fcitx.vim'
         Plug 'vim-airline/vim-airline'
         Plug 'nathanaelkane/vim-indent-guides'
@@ -535,9 +505,6 @@ endif
         " lua support
         Plug 'xolox/vim-misc'          " required by lua.vim
         Plug 'xolox/vim-lua-ftplugin'  " lua file type plug-in for the vim text editor
-        " global string search
-        Plug 'mileszs/ack.vim'
-        Plug 'dyng/ctrlsf.vim'
         " golang support, reference: https://blog.csdn.net/zhang197093/article/details/78559903?locationNum=5&fps=1
         Plug 'fatih/vim-go'
         Plug 'nsf/gocode', {'rtp': 'vim/'}
@@ -559,34 +526,19 @@ endif
             Plug 'snakeleon/YouCompleteMe-x64'
         else
         endif
-        " text
+        " string search
+        Plug 'mileszs/ack.vim'
+        Plug 'dyng/ctrlsf.vim'
+        " tags search
         Plug 'ludovicchabant/vim-gutentags'
-        Plug 'vim-scripts/taglist.vim' " TODO: choose one
-        Plug 'majutsushi/tagbar'  " TODO: choose one
-        Plug 'Yggdroot/LeaderF'  " TODO: choose one
+        if IsWindows()
+            Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
+        else
+            Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+        end
     " }@}
     " Initialize plugin system
     call plug#end()
-
-    " Ctrlp {@{
-        "设置搜索时忽略的文件
-        let g:ctrlp_custom_ignore ={
-            \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',
-            \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc)$',
-            \ }
-
-        let g:ctrlp_working_path_mode=0
-        let g:ctrlp_match_window_bottom=1
-        let g:ctrlp_max_height=15
-        let g:ctrlp_match_window_reversed=0
-        let g:ctrlp_mruf_max=500
-        let g:ctrlp_follow_symlinks=1
-    " }@}
-
-    " CtrlpFunky {@{
-        let g:ctrlp_funky_syntax_highlight =1
-        let g:ctrlp_extensions =['funky']
-    " }@}
 
     " NERDTree {@{
         " 在 vim 启动的时候默认开启 NERDTree（autocmd 可以缩写为 au）
@@ -823,5 +775,24 @@ endif
         if !isdirectory(s:vim_tags)
             silent! call mkdir(s:vim_tags, 'p')
         endif
+    " }@}
+
+    " leaderf {@{
+        let g:Lf_ShortcutF = '<leader>ff'
+        let g:Lf_ShortcutB = '<leader>fb'
+        noremap <leader>ffm :LeaderfMru<cr>
+        noremap <leader>ffu :LeaderfFunction!<cr>
+        noremap <leader>fb :LeaderfBuffer<cr>
+        noremap <leader>ft :LeaderfTag<cr>
+        let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
+
+        let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
+        let g:Lf_WorkingDirectoryMode = 'Ac'
+        let g:Lf_WindowHeight = 0.30
+        let g:Lf_CacheDirectory = expand('~/.vim/cache')
+        let g:Lf_ShowRelativePath = 0
+        let g:Lf_HideHelp = 1
+        let g:Lf_StlColorscheme = 'powerline'
+        let g:Lf_PreviewResult = {'Function':0, 'BufTag':0}
     " }@}
 " }@}
