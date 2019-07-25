@@ -1,12 +1,12 @@
 " functions {@{
 function IsLinux()
-return (has('unix') && !has('macunix') && !has('win32unix'))
+    return (has('unix') && !has('macunix') && !has('win32unix'))
 endfunction
 function IsWindows()
-return (has('win32') || has('win64'))
+    return (has('win32') || has('win64'))
 endfunction
 function IsOSX()
-return has('macunix')
+    return has('macunix')
 endfunction
 
 set diffexpr=MyDiff()
@@ -61,554 +61,614 @@ endfunction
 "             https://www.zhihu.com/question/47691414
 
 " General Config {@{
-    if IsWindows()
-        source $VIMRUNTIME/vimrc_example.vim
-        source $VIMRUNTIME/mswin.vim
-        behave mswin
-    endif
+if IsWindows()
+    source $VIMRUNTIME/vimrc_example.vim
+    source $VIMRUNTIME/mswin.vim
+    behave mswin
+endif
 
-    " dos和unix格式：https://blog.csdn.net/lovelirui/article/details/6282940
-    " 如果你使用windows上的vim，并且希望你的会话文件可以同时被windows版本的vim和UNIX版本的vim共同使用的话，
-    " 在‘sessionoptions’中加入‘slash’和‘unix’，前者把文件名中的’\'替换为’/'，后者会把会话文件的换行符保存成unix格式
-    set sessionoptions +=unix,slash
+" dos和unix格式：https://blog.csdn.net/lovelirui/article/details/6282940
+" 如果你使用windows上的vim，并且希望你的会话文件可以同时被windows版本的vim和UNIX版本的vim共同使用的话，
+" 在‘sessionoptions’中加入‘slash’和‘unix’，前者把文件名中的’\'替换为’/'，后者会把会话文件的换行符保存成unix格式
+set sessionoptions +=unix,slash
 " }@}
 
 
 " System Config {@{
-    " =右边不可有空格，否则不能识别
-    " automatic full screen at startup
-    if IsWindows()
-	autocmd GUIEnter * simalt ~x
+" =右边不可有空格，否则不能识别
+" automatic full screen at startup
+if IsWindows()
+    autocmd GUIEnter * simalt ~x
+    if has('gui_running') && has('libcall')
+        let g:MyVimLib = $VIMRUNTIME.'/gvimfullscreen.dll'
+        function ToggleFullScreen()
+            call libcallnr(g:MyVimLib, "ToggleFullScreen", 0)
+        endfunction
+
+        "Alt+Enter
+        map <A-Enter> <Esc>:call ToggleFullScreen()<CR>
+
+        let g:VimAlpha = 240
+        function! SetAlpha(alpha)
+            let g:VimAlpha = g:VimAlpha + a:alpha
+            if g:VimAlpha < 180
+                let g:VimAlpha = 180
+            endif
+            if g:VimAlpha > 255
+                let g:VimAlpha = 255
+            endif
+            call libcall(g:MyVimLib, 'SetAlpha', g:VimAlpha)
+        endfunction
+
+        "Shift+Y
+        nmap <s-y> <Esc>:call SetAlpha(3)<CR>
+        "Shift+T
+        nmap <s-t> <Esc>:call SetAlpha(-3)<CR>
+
+        let g:VimTopMost = 0
+        function! SwitchVimTopMostMode()
+            if g:VimTopMost == 0
+                let g:VimTopMost = 1
+            else
+                let g:VimTopMost = 0
+            endif
+            call libcall(g:MyVimLib, 'EnableTopMost', g:VimTopMost)
+        endfunction
+
+        "Shift+R
+        nmap <s-r> <Esc>:call SwitchVimTopMostMode()<CR>
     endif
+endif
 
-    " support utf-8
-    if has("multi_byte")
-        set encoding=utf-8
-        set termencoding=utf-8
-        set formatoptions+=mM
-        set fencs=utf-8,gbk
-        if v:lang =~? '^/(zh/)/|/(ja/)/|/(ko/)'
-            set ambiwidth=double
-        endif
-        if has("win32")
-            source $VIMRUNTIME/delmenu.vim
-            source $VIMRUNTIME/menu.vim
-            language messages zh_CN.utf-8
-        endif
-    else
-        echoerr "sorry, this version of (g)vim was not compiled with +multi_byte"
+" support utf-8
+if has("multi_byte")
+    set encoding=utf-8
+    set termencoding=utf-8
+    set formatoptions+=mM
+    set fencs=utf-8,gbk
+    if v:lang =~? '^/(zh/)/|/(ja/)/|/(ko/)'
+        set ambiwidth=double
     endif
-
-    " 让配置变更立即生效
-    autocmd BufWritePost $MYVIMRC source $MYVIMRC
-
-    " 改变光标样式
-    set guicursor=i:ver1
-
-    if IsWindows()
-        " 窗口自动透明
-        au GUIEnter * call libcallnr("vimtweak.dll", "SetAlpha", 238)
+    if has("win32")
+        source $VIMRUNTIME/delmenu.vim
+        source $VIMRUNTIME/menu.vim
+        language messages zh_CN.utf-8
     endif
+else
+    echoerr "sorry, this version of (g)vim was not compiled with +multi_byte"
+endif
 
-    " 不在当前目录生成备份文件
-    "set undodir = $VIM/undodir/
-    set noundofile
-    set nobackup
-    set noswapfile
+" 让配置变更立即生效
+autocmd BufWritePost $MYVIMRC source $MYVIMRC
 
-    " 显示不可见字符
-    "set list
-    "set listchars=eol:┐,trail:┐,tab:>-,nbsp:.,precedes:«,extends:»
+" 改变光标样式
+set guicursor=i:ver1
 
-    " 打开文件的同时，自动切换当前路径
-    " autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
+if IsWindows()
+    " 窗口自动透明
+    au GUIEnter * call libcallnr("vimtweak.dll", "SetAlpha", 238)
+endif
+
+" 不在当前目录生成备份文件
+"set undodir = $VIM/undodir/
+set noundofile
+set nobackup
+set noswapfile
+
+" 显示不可见字符
+"set list
+"set listchars=eol:┐,trail:┐,tab:>-,nbsp:.,precedes:«,extends:»
+
+" 打开文件的同时，自动切换当前路径
+" autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
 " }@}
 
 
 " Keyboard Config {@{
-        " 通用快捷键，保证相同的功能用相同的快捷键 {@{
-        " 上下分屏，水平排列，并是/否跳转
-        let hsplit  ="hsp"   " short for 'h'
-        let shsplit ="shsp"  " short for 'sh'
+" 通用快捷键，保证相同的功能用相同的快捷键 {@{
+" 上下分屏，水平排列，并是/否跳转
+let hsplit  ="hsp"   " short for 'h'
+let shsplit ="shsp"  " short for 'sh'
 
-        " 左右分屏，垂直排列，并是/否跳转
-        let vsplit ="vsp"    " short for 'v'
-        let svsplit ="svsp"  " short for 'sv'
+" 左右分屏，垂直排列，并是/否跳转
+let vsplit ="vsp"    " short for 'v'
+let svsplit ="svsp"  " short for 'sv'
 
-        " 不分屏直接打开文件，并是/否跳转
-        let open  ="o"
-        let sopen ="so"
+" 不分屏直接打开文件，并是/否跳转
+let open  ="o"
+let sopen ="so"
 
-        " 在新标签页中打开
-        let tab ="tb"
+" 在新标签页中打开
+let tab ="tb"
 
-        " 切换工作目录
-        let cwd ="cd"
+" 切换工作目录
+let cwd ="cd"
 
-        " 打开菜单
-        let menu = "me"
+" 打开菜单
+let menu = "me"
 
-        " 新建书签
-        let NewBookMark = "nbm"
+" 新建书签
+let NewBookMark = "nbm"
 
-        " 删除书签
-        let DeleteBookMark = "dbm"
+" 删除书签
+let DeleteBookMark = "dbm"
 
-        " 退出
-        let quit = "qu"
+" 退出
+let quit = "qu"
 
-        " 全屏显示
-        let FullScreen = "fs"
+" 全屏显示
+let FullScreen = "fs"
 
-        " 帮助
-        let help = "he"
+" 帮助
+let help = "he"
 
-        " 刷新
-        let refresh = "re"
+" 刷新
+let refresh = "re"
 
-        " 打开文件搜索
-        let fsearch = "ff"
-        " 全局搜索
-        let gfsearch = "gff"
-        " 当前目录搜索
-        let dfsearch = "dff"
+" 打开文件搜索
+let fsearch = "ff"
+" 全局搜索
+let gfsearch = "gff"
+" 当前目录搜索
+let dfsearch = "dff"
 
-        " 打开字符串搜索
-        let ssearch = "sf"
-        " 全局搜索
-        let gssearch = "gsf"
-        " 当前目录搜索
-        let dssearch = "dsf"
-        " 当前文件搜索
-        let fssearch = "fsf"
-    " }@}
+" 打开字符串搜索
+let ssearch = "sf"
+" 全局搜索
+let gssearch = "gsf"
+" 当前目录搜索
+let dssearch = "dsf"
+" 当前文件搜索
+let fssearch = "fsf"
+" }@}
 
-    " defined <leader>
-    let mapleader =";"
+" defined <leader>
+let mapleader =";"
 
-    " Vim's Function {@{
-        " 文档操作 {@{
-            " 设置快捷键将选中文本块复制至系统剪贴板
-            vnoremap <leader>sy "+y
+" Vim's Function {@{
+" 文档操作 {@{
+" 设置快捷键将选中文本块复制至系统剪贴板
+vnoremap <leader>sy "+y
 
-            " 设置快捷键将系统剪贴板内容粘贴至 vim
-            nmap <leader>sp "+p
+" 设置快捷键将系统剪贴板内容粘贴至 vim
+nmap <leader>sp "+p
 
-            " 定义快捷键关闭当前分割窗口
-            nmap <leader>fq :q<CR>
-            nmap <leader>fqa :qa<CR>
+" 定义快捷键关闭当前分割窗口
+nmap <leader>fq :q<CR>
+nmap <leader>fqa :qa<CR>
 
-            " 不做任何保存，直接退出 vim
-            nmap <leader>fQ :q!<CR>
-            nmap <leader>fQA :qa!<CR>
+" 不做任何保存，直接退出 vim
+nmap <leader>fQ :q!<CR>
+nmap <leader>fQA :qa!<CR>
 
-            " 定义快捷键保存当前窗口内容
-            nmap <leader>fw :w<CR>
-            nmap <leader>fwa :wa<CR>
-            nmap <leader>fwq :wq<CR>
+" 定义快捷键保存当前窗口内容
+nmap <leader>fw :w<CR>
+nmap <leader>fwa :wa<CR>
+nmap <leader>fwq :wq<CR>
 
-            " 定义快捷键保存所有窗口内容并退出 vim
-            nmap <leader>fwqa :wa<CR>:q<CR>
+" 定义快捷键保存所有窗口内容并退出 vim
+nmap <leader>fwqa :wa<CR>:q<CR>
 
-            " 打开当前文件所在位置
-            nmap <leader>fo <ESC>:call OpenFileLocation()<CR>
+" 打开当前文件所在位置
+nmap <leader>fo <ESC>:call OpenFileLocation()<CR>
 
-            " 定义快捷键在结对符之间跳转
-            nmap <leader>m %
+" 定义快捷键在结对符之间跳转
+nmap <leader>m %
 
-            " 定义快捷键到行首和行尾
-            nmap <leader>lb 0
-            nmap <leader>le $
+" 定义快捷键到行首和行尾
+nmap <leader>lb 0
+nmap <leader>le $
 
-            " 用空格键来开关代码折叠
-            nnoremap <leader><space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
+" 用空格键来开关代码折叠
+nnoremap <leader><space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
 
-            " 打开/关闭所有折叠
-            nnoremap <leader><space>o zR
-            nnoremap <leader><space>c zM
+" 打开/关闭所有折叠
+nnoremap <leader><space>o zR
+nnoremap <leader><space>c zM
 
-            " 跳转到下/上一个折叠
-            nnoremap <leader><space>j zj
-            nnoremap <leader><space>k zk
-        " }@}
+" 跳转到下/上一个折叠
+nnoremap <leader><space>j zj
+nnoremap <leader><space>k zk
+" }@}
 
-        " 窗口操作 {@{
-            " 跳转至右方的窗口
-            nnoremap <leader>lw <C-W>l
+" 窗口操作 {@{
+" 跳转至右方的窗口
+nnoremap <leader>lw <C-W>l
 
-            " 跳转至左方的窗口
-            nnoremap <leader>hw <C-W>h
+" 跳转至左方的窗口
+nnoremap <leader>hw <C-W>h
 
-            " 跳转至上方的子窗口
-            nnoremap <leader>kw <C-W>k
+" 跳转至上方的子窗口
+nnoremap <leader>kw <C-W>k
 
-            " 跳转至下方的子窗口
-            nnoremap <leader>jw <C-W>j
+" 跳转至下方的子窗口
+nnoremap <leader>jw <C-W>j
 
-            " 依次遍历子窗口
-            nnoremap <leader>nw <C-W><C-W>
+" 依次遍历子窗口
+nnoremap <leader>nw <C-W><C-W>
 
-            " 跳转到最左上角的窗口
-            nnoremap <leader>tw <C-W>t
+" 跳转到最左上角的窗口
+nnoremap <leader>tw <C-W>t
 
-            " 跳转到最右下角的窗口
-            nnoremap <leader>bw <C-W>b
+" 跳转到最右下角的窗口
+nnoremap <leader>bw <C-W>b
 
-            " 跳转到前一个访问的窗口
-            nnoremap <leader>pw <C-W>p
+" 跳转到前一个访问的窗口
+nnoremap <leader>pw <C-W>p
 
-            " 移动窗口至屏幕底端，并占用全部宽度
-            nmap <leader>wj <C-W>J
+" 移动窗口至屏幕底端，并占用全部宽度
+nmap <leader>wj <C-W>J
 
-            " 移动窗口至屏幕顶端，并占用全部宽度
-            nmap <leader>wk <C-W>K
+" 移动窗口至屏幕顶端，并占用全部宽度
+nmap <leader>wk <C-W>K
 
-            " 移动窗口至屏幕左端，并占用全部高度
-            nmap <leader>wh <C-W>H
+" 移动窗口至屏幕左端，并占用全部高度
+nmap <leader>wh <C-W>H
 
-            " 移动窗口至屏幕右端，并占用全部高=
-            nmap <leader>wl <C-W>L
+" 移动窗口至屏幕右端，并占用全部高=
+nmap <leader>wl <C-W>L
 
-            " 调整窗口大小
-            nmap <leader>ws3 :resize +16<CR>
-            nmap <leader>ws4 :resize -16<CR>
-            nmap <leader>ws1 :vertical resize +16<CR>
-            nmap <leader>ws2 :vertical resize -16<CR>
+" 调整窗口大小
+nmap <leader>ws3 :resize +16<CR>
+nmap <leader>ws4 :resize -16<CR>
+nmap <leader>ws1 :vertical resize +16<CR>
+nmap <leader>ws2 :vertical resize -16<CR>
 
-            " 微调窗口大小
-            nmap <leader>w1 <C-W>>
-            nmap <leader>w2 <C-W><
-            nmap <leader>w3 <C-W>+
-            nmap <leader>w4 <C-W>-
+" 微调窗口大小
+nmap <leader>w1 <C-W>>
+nmap <leader>w2 <C-W><
+nmap <leader>w3 <C-W>+
+nmap <leader>w4 <C-W>-
 
-            " 将当前窗口的宽度调到最大
-            nmap <leader>w[ <C-W>|
+" 将当前窗口的宽度调到最大
+nmap <leader>w[ <C-W>|
 
-            " 将当前窗口的宽度调到最小
-            nmap <leader>w] <C-W>1|
+" 将当前窗口的宽度调到最小
+nmap <leader>w] <C-W>1|
 
-            " 让所有窗口调整至相同尺寸
-            nmap <leader>w' <C-W>=
-        " }@}
+" 让所有窗口调整至相同尺寸
+nmap <leader>w' <C-W>=
 
-        " 标签操作 {@{
-            " 新建标签
-            nmap <leader>tn :tabnew<CR>
+" 打开terminal窗口
+nnoremap <leader>wt :term<CR>
+" 隐藏terminal窗口
+nnoremap <C-W>wth :hide<CR>
+" 关闭terminal窗口
+nnoremap <C-W>wtq :quit!<CR>
+" }@}
 
-            " 关闭标签
-            nmap <leader>tc :tabc<CR>
+" 标签操作 {@{
+" 新建标签
+nmap <leader>tn :tabnew<CR>
 
-            " 在新标签中打开当前缓冲区中的文件
-            nmap <leader>to :tab split<CR>
+" 关闭标签
+nmap <leader>tc :tabc<CR>
 
-            " 跳转到下/上一个标签: gt gT
+" 在新标签中打开当前缓冲区中的文件
+nmap <leader>to :tab split<CR>
 
-            " 跳转到第一个标签
-            nmap <leader>tf :tabfirst<CR>
+" 跳转到下/上一个标签: gt gT
 
-            " 跳转到最后一个标签
-            nmap <leader>tl :tablast<CR>
+" 跳转到第一个标签
+nmap <leader>tf :tabfirst<CR>
 
-            " 移动标签
-            "nmap <leader>tm :tabm 1
+" 跳转到最后一个标签
+nmap <leader>tl :tablast<CR>
 
-            " 显示标签列表
-            nmap <leader>ts :tabs<CR>
-        " }@}
+" 移动标签
+"nmap <leader>tm :tabm 1
 
-        " 切换当前目录为正在编辑的文件所在目录
-        nnoremap <silent><leader>cd :cd %:p:h<CR>
-    " }@}
+" 显示标签列表
+nmap <leader>ts :tabs<CR>
+" }@}
 
-    " Plugins's Function {@{
-        " NERDTree {@{
-            " https://github.com/scrooloose/nerdtree/blob/master/doc/NERDTree.txt
-            " 打开/关闭NERDTree
-            nmap <leader>nt :NERDTreeToggle<CR>
+" 切换当前目录为正在编辑的文件所在目录
+nnoremap <silent><leader>cd :cd %:p:h<CR>
+" }@}
 
-            " 将NERDTree定位到当前文件的目录
-            nmap <leader>nf :NERDTreeFind<CR>
+" Plugins's Function {@{
+" NERDTree {@{
+" https://github.com/scrooloose/nerdtree/blob/master/doc/NERDTree.txt
+" 打开/关闭NERDTree
+nmap <leader>nt :NERDTreeToggle<CR>
 
-            " 将当前所在node加入书签
-            nmap <leader>nbm :Bookmark<CR>
+" 将NERDTree定位到当前文件的目录
+nmap <leader>nf :NERDTreeFind<CR>
 
-            let g:NERDTreeMapActivateNode  =open
-            let g:NERDTreeMapPreview       =sopen
-            let g:NERDTreeMapOpenSplit     =hsplit
-            let g:NERDTreeMapPreviewSplit  =shsplit
-            let g:NERDTreeMapOpenVSplit    =vsplit
-            let g:NERDTreeMapPreviewVSplit =svsplit
-            let g:NERDTreeMapOpenInTab     =tab
-            let g:NERDTreeMapChdir         =cwd
-            let g:NERDTreeMapMenu          =menu
-            let g:NERDTreeMapQuit          =quit
-            let g:NERDTreeMapToggleZoom    =FullScreen
-            let g:NERDTreeMapHelp          =help
-            let g:NERDTreeMapRefreshRoot   =refresh
-        " }@}
+" 将当前所在node加入书签
+nmap <leader>nbm :Bookmark<CR>
 
-        " VimIndentGuides {@{
-            " 快捷键 i 开/关缩进可视化
-            nmap <silent><leader>ig <Plug>IndentGuidesToggle
-        " }@}
+let g:NERDTreeMapActivateNode  =open
+let g:NERDTreeMapPreview       =sopen
+let g:NERDTreeMapOpenSplit     =hsplit
+let g:NERDTreeMapPreviewSplit  =shsplit
+let g:NERDTreeMapOpenVSplit    =vsplit
+let g:NERDTreeMapPreviewVSplit =svsplit
+let g:NERDTreeMapOpenInTab     =tab
+let g:NERDTreeMapChdir         =cwd
+let g:NERDTreeMapMenu          =menu
+let g:NERDTreeMapQuit          =quit
+let g:NERDTreeMapToggleZoom    =FullScreen
+let g:NERDTreeMapHelp          =help
+let g:NERDTreeMapRefreshRoot   =refresh
+" }@}
 
-        " VimFswitch {@{
-            " *.cpp 和 *.h 间切换
-            nmap <silent><leader>sw :FSHere<cr>
-        " }@}
+" VimIndentGuides {@{
+" 快捷键 i 开/关缩进可视化
+nmap <silent><leader>ig <Plug>IndentGuidesToggle
+" }@}
 
-        " YouCompleteMe {@{
-            " 转到定义
-            nnoremap <A-g> :YcmCompleter GoToDefinitionElseDeclaration<CR> 
-        " }@}
+" VimFswitch {@{
+" *.cpp 和 *.h 间切换
+nmap <silent><leader>sw :FSHere<cr>
+" }@}
 
-        " Slimv {@{
-            nmap <leader>s ,
-            nmap <leader>sme ,,
-        " }@}
+" YouCompleteMe {@{
+" 转到定义
+nnoremap <A-g> :YcmCompleter GoToDefinitionElseDeclaration<CR>
+" }@}
 
-        " Ack {@{
-            " https://github.com/mileszs/ack.vim/blob/master/doc/ack.txt
-            " https://blog.csdn.net/Demorngel/article/details/71147697
-            "map <leader>ssearch :Ack<space>
-            "map <leader>sf :Ack!<space>
-        " }@}
+" Slimv {@{
+nmap <leader>s ,
+nmap <leader>sme ,,
+" }@}
 
-        " CtrlSF {@{
-            " https://github.com/dyng/ctrlsf.vim/blob/master/doc/ctrlsf.txt
-            " https://www.cnblogs.com/yuehq/p/4067817.html
-            nmap <leader>sf :CtrlSF<space>
-            nmap <leader>sft :CtrlSFToggle<cr>
-            vmap <leader>sfv <Plug>CtrlSFVwordExec
-            nmap <leader>sfc <Plug>CtrlSFCwordPath
-            nmap <leader>sfl <Plug>CtrlSFPwordPath
-        " }@}
+" Ack {@{
+" https://github.com/mileszs/ack.vim/blob/master/doc/ack.txt
+" https://blog.csdn.net/Demorngel/article/details/71147697
+"map <leader>ssearch :Ack<space>
+"map <leader>sf :Ack!<space>
+" }@}
 
-        " Ale {@{
-            " https://github.com/w0rp/ale/blob/master/doc/ale.txt
-            " https://blog.csdn.net/Demorngel/article/details/69052789
-            " 普通模式下，sp前往上一个错误或警告，sn前往下一个错误或警告
-            nmap sp <Plug>(ale_previous_wrap)
-            nmap sn <Plug>(ale_next_wrap)
-            " <leader>s触发/关闭语法检查
-            nmap <leader>s :ALEToggle<CR>
-            " <leader>d查看错误或警告的详细信息
-            nmap <leader>d :ALEDetail<CR>
-        " }@}
-    " }@}
+" CtrlSF {@{
+" https://github.com/dyng/ctrlsf.vim/blob/master/doc/ctrlsf.txt
+" https://www.cnblogs.com/yuehq/p/4067817.html
+nmap <leader>sf :CtrlSF<space>
+nmap <leader>sft :CtrlSFToggle<cr>
+vmap <leader>sfv <Plug>CtrlSFVwordExec
+nmap <leader>sfc <Plug>CtrlSFCwordPath
+nmap <leader>sfl <Plug>CtrlSFPwordPath
+" }@}
+
+" Ale {@{
+" https://github.com/w0rp/ale/blob/master/doc/ale.txt
+" https://blog.csdn.net/Demorngel/article/details/69052789
+" 普通模式下，sp前往上一个错误或警告，sn前往下一个错误或警告
+nmap sp <Plug>(ale_previous_wrap)
+nmap sn <Plug>(ale_next_wrap)
+" <leader>s触发/关闭语法检查
+nmap <leader>s :ALEToggle<CR>
+" <leader>d查看错误或警告的详细信息
+nmap <leader>d :ALEDetail<CR>
+" }@}
+" }@}
 " }@}
 
 
 " Text Editor Config {@{
-    set nu!
+set nu!
 
-    " 开启语法高亮功能
-    syntax enable 
+" 开启语法高亮功能
+syntax enable
 
-    " 允许用指定语法高亮配色方案替换默认方案
-    syntax on
+" 允许用指定语法高亮配色方案替换默认方案
+syntax on
 
-    set guifont=Consolas:h16
-    "set guifont =Monaco:h16
+"set guifont=Consolas:h16
+"set guifont =Monaco:h16
 
-    " 开启实时搜索功能
-    set incsearch
+" 开启实时搜索功能
+set incsearch
 
-    " 搜索时大小写不敏感
-    set ignorecase
-    " 如果有一个大写字母，则切换到大小写敏感查找
-    set smartcase
+" 搜索时大小写不敏感
+set ignorecase
+" 如果有一个大写字母，则切换到大小写敏感查找
+set smartcase
 
-    " 关闭兼容模式
-    set nocompatible
+" 关闭兼容模式
+set nocompatible
 
-    " vim 自身命令行模式智能补全
-    set wildmenu
+" vim 自身命令行模式智能补全
+set wildmenu
 
-    " 总是显示状态栏
-    set laststatus =2
+" 总是显示状态栏
+set laststatus =2
 
-    " 显示光标当前位置
-    set ruler
+" 显示光标当前位置
+set ruler
 
-    " 开启行号显示
-    set number
+" 开启行号显示
+set number
 
-    " 高亮显示当前行/列
-    set cursorline
-    "set cursorcolumn
+" 高亮显示当前行/列
+set cursorline
+"set cursorcolumn
 
-    " 高亮显示搜索结果
-    set hlsearch
+" 高亮显示搜索结果
+set hlsearch
 
-    " 开启文件类型侦测
-    filetype on
+" 开启文件类型侦测
+filetype on
 
-    " 根据侦测到的不同类型加载对应的插件
-    filetype plugin on
+" 根据侦测到的不同类型加载对应的插件
+filetype plugin on
 
-    " 自适应不同语言的智能缩进
-    filetype indent on
+" 自适应不同语言的智能缩进
+filetype indent on
 
-    " 将制表符扩展为空格
-    set expandtab
+" 将制表符扩展为空格
+set expandtab
 
-    " 设置编辑时制表符占用空格数
-    set tabstop =4
+" 设置编辑时制表符占用空格数
+set tabstop =4
 
-    " 设置格式化时制表符占用空格数
-    set shiftwidth =4
+" 设置格式化时制表符占用空格数
+set shiftwidth =4
 
-    " 让 vim 把连续数量的空格视为一个制表符
-    set softtabstop =4
+" 让 vim 把连续数量的空格视为一个制表符
+set softtabstop =4
 
-    " 代码折叠
-    set foldenable
-    "set foldmethod =indent
-    "set foldmethod =syntax
-    set foldmethod =marker
-    set foldmarker ={@{,}@}
+" 代码折叠
+set foldenable
+"set foldmethod =indent
+"set foldmethod =syntax
+set foldmethod =marker
+set foldmarker ={@{,}@}
 
-    " 设置不自动折行
-    set nowrap
+" 设置不自动折行
+set nowrap
 
-    " 设置索引文件位置
-    set tags=./.tags;,.tags
+" 设置索引文件位置
+set tags=./.tags;,.tags
 " }@}
 
 
 " Editor Theme Config {@{
-    "colorscheme molokai
-    "colorscheme phd
+"colorscheme molokai
+"colorscheme phd
 
-    " Solarized {@{
-        colorscheme solarized
-        set background =dark
-        let g:solarized_termcolors =256
-    " }@}
+" Solarized {@{
+colorscheme solarized
+set background =dark
+let g:solarized_termcolors =256
+" }@}
 
-    " 禁止光标闪烁
-    "set gcr =a:block-blinkon0
+" 禁止光标闪烁
+"set gcr =a:block-blinkon0
 
-    " 禁止显示滚动条
-    set guioptions -=l
-    set guioptions -=L
-    set guioptions -=r
-    set guioptions -=R
+" 禁止显示滚动条
+set guioptions -=l
+set guioptions -=L
+set guioptions -=r
+set guioptions -=R
 
-    " 禁止显示菜单和工具条
-    set guioptions -=m
-    set guioptions -=T
+" 禁止显示菜单和工具条
+set guioptions -=m
+set guioptions -=T
 " }@}
 
 
-" Editor Plugin Config {@{ 
-    " Specify a directory for plugins
-    " - For Neovim: ~/.local/share/nvim/plugged
-    " - Avoid using standard Vim directory names like 'plugin'
-    if IsWindows()
-        "Windows (PowerShell)
-        "$uri = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-        "(New-Object Net.WebClient).DownloadFile(
-        "$uri,
-        "$ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath(
-        ""$VIMRUNTIME\autoload\plug.vim"
-        ")
-        ")
-        call plug#begin('$VIM/vimfiles/plugged/')
-    else
-        if empty(glob('~/.vim/autoload/plug.vim'))
-            silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-                        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-            autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-        endif
-        call plug#begin('~/.vim/plugged')
+" Editor Plugin Config {@{
+" Specify a directory for plugins
+" - For Neovim: ~/.local/share/nvim/plugged
+" - Avoid using standard Vim directory names like 'plugin'
+if IsWindows()
+    "Windows (PowerShell)
+    "$uri = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    "(New-Object Net.WebClient).DownloadFile(
+    "$uri,
+    "$ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath(
+    ""$VIMRUNTIME\autoload\plug.vim"
+    ")
+    ")
+    call plug#begin('$VIM/vimfiles/plugged/')
+else
+    if empty(glob('~/.vim/autoload/plug.vim'))
+        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
     endif
+    call plug#begin('~/.vim/plugged')
+endif
 
-    " Plugins {@{
-        " Make sure you use single quotes
-        Plug 'altercation/vim-colors-solarized'
-        Plug 'tomasr/molokai'
-        Plug 'vim-scripts/phd'
-        Plug 'scrooloose/nerdtree'
-        Plug 'Xuyuanp/nerdtree-git-plugin'
-        Plug 'lilydjwg/fcitx.vim'
-        Plug 'vim-airline/vim-airline'
-        Plug 'nathanaelkane/vim-indent-guides'
-        Plug 'octol/vim-cpp-enhanced-highlight'
-        Plug 'derekwyatt/vim-fswitch'
-        Plug 'derekwyatt/vim-protodef'
-        Plug 'scrooloose/nerdcommenter'
-        Plug 'Valloric/YouCompleteMe'
-        " lisp support
-        Plug 'kovisoft/slimv'
-        " lua support
-        Plug 'xolox/vim-misc'          " required by lua.vim
-        Plug 'xolox/vim-lua-ftplugin'  " lua file type plug-in for the vim text editor
-        " golang support, reference: https://blog.csdn.net/zhang197093/article/details/78559903?locationNum=5&fps=1
-        Plug 'fatih/vim-go'
-        Plug 'nsf/gocode', {'rtp': 'vim/'}
-        " git support
-        Plug 'tpope/vim-fugitive'
-        " eiditor
-        Plug 'luochen1990/rainbow'
-        Plug 'haya14busa/incsearch.vim'
-        Plug 'easymotion/vim-easymotion'
-        Plug 'andymass/vim-matchup'
-        Plug 'qstrahl/vim-matchmaker'
-        " others
-        Plug 'w0rp/ale'
-        Plug 'terryma/vim-multiple-cursors'
-        "Plugin 'lyokha/vim-xkbswitch'
-        if has("win32")
-            "Plugin 'snakeleon/YouCompleteMe-x86'
-        elseif has("win64")
-            Plug 'snakeleon/YouCompleteMe-x64'
-        else
-        endif
-        " string search
-        Plug 'mileszs/ack.vim'
-        Plug 'dyng/ctrlsf.vim'
-        " tags search
-        Plug 'ludovicchabant/vim-gutentags'
-        if IsWindows()
-            Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
-        else
-            Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
-        end
-		Plug 'brookhong/cscope.vim'
-    " }@}
-    " Initialize plugin system
-    call plug#end()
+" Plugins {@{
+" Make sure you use single quotes
+Plug 'altercation/vim-colors-solarized'
+Plug 'tomasr/molokai'
+Plug 'vim-scripts/phd'
+Plug 'lilydjwg/fcitx.vim'
+Plug 'nathanaelkane/vim-indent-guides'
+Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'derekwyatt/vim-fswitch'
+Plug 'derekwyatt/vim-protodef'
+Plug 'scrooloose/nerdcommenter'
+Plug 'Valloric/YouCompleteMe'
+" lisp support
+Plug 'kovisoft/slimv'
+" lua support
+Plug 'xolox/vim-misc'          " required by lua.vim
+Plug 'xolox/vim-lua-ftplugin'  " lua file type plug-in for the vim text editor
+" golang support, reference: https://blog.csdn.net/zhang197093/article/details/78559903?locationNum=5&fps=1
+Plug 'fatih/vim-go'
+Plug 'nsf/gocode', {'rtp': 'vim/'}
+" version control
+Plug 'tpope/vim-fugitive'
+Plug 'mhinz/vim-signify'
+" eiditor
+Plug 'luochen1990/rainbow'
+Plug 'haya14busa/incsearch.vim'
+Plug 'easymotion/vim-easymotion'
+Plug 'andymass/vim-matchup'
+Plug 'qstrahl/vim-matchmaker'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'enricobacis/vim-airline-clock'
+Plug 'mattn/webapi-vim'
+"Plug 'Wildog/airline-weather.vim'
+Plug 'ryanoasis/vim-devicons'
+Plug 'scrooloose/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'terryma/vim-multiple-cursors'
+" codes
+Plug 'w0rp/ale'
+"Plugin 'lyokha/vim-xkbswitch'
+if has("win32")
+    "Plugin 'snakeleon/YouCompleteMe-x86'
+elseif has("win64")
+    Plug 'snakeleon/YouCompleteMe-x64'
+else
+endif
+Plug 'Chiel92/vim-autoformat'
+Plug 'junegunn/vim-easy-align'
+Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'Shougo/echodoc.vim'
+" string search
+Plug 'mileszs/ack.vim'
+Plug 'dyng/ctrlsf.vim'
+" tags search
+Plug 'ludovicchabant/vim-gutentags'
+if IsWindows()
+    Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
+else
+    Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+end
+Plug 'brookhong/cscope.vim'
+" others
+Plug 'skywind3000/asyncrun.vim'
+" }@}
+" Initialize plugin system
+call plug#end()
 
-    " NERDTree {@{
-        " 在 vim 启动的时候默认开启 NERDTree（autocmd 可以缩写为 au）
-        autocmd VimEnter * NERDTree
-        " 将 NERDTree 的窗口设置在 vim 窗口的右侧（默认为左侧）
-        let NERDTreeWinPos ="right"
-        " 当打开 NERDTree 窗口时，自动显示 Bookmarks
-        let NERDTreeShowBookmarks =1
-        " 显示行号
-        let NERDTreeShowLineNumbers =1
-        let NERDTreeAutoCenter =1
-        " 是否显示隐藏文件
-        let NERDTreeShowHidden =1
-        " NERDTree 子窗口中不显示冗余帮助信息
-        let NERDTreeMinimalUI =1
-        " 删除文件时自动删除文件对应 buffer
-        let NERDTreeAutoDeleteBuffer =1
-        " vim不指定具体文件打开是，自动使用nerdtree
-        autocmd StdinReadPre * let s:std_in =1
-        autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-        " 当vim打开一个目录时，nerdtree自动使用
-        autocmd StdinReadPre * let s:std_in =1
-        autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-        " 当vim中没有其他文件，只剩下nerdtree的时候，自动关闭窗口
-        autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-    " }@}
+" NERDTree {@{
+" reference: https://segmentfault.com/a/1190000015143474
+" 在 vim 启动的时候默认开启 NERDTree（autocmd 可以缩写为 au）
+autocmd VimEnter * NERDTree
+" 将 NERDTree 的窗口设置在 vim 窗口的右侧（默认为左侧）
+let NERDTreeWinPos ="right"
+" 当打开 NERDTree 窗口时，自动显示 Bookmarks
+let NERDTreeShowBookmarks =1
+" 显示行号
+let NERDTreeShowLineNumbers =1
+let NERDTreeAutoCenter =1
+" 是否显示隐藏文件
+let NERDTreeShowHidden =1
+" NERDTree 子窗口中不显示冗余帮助信息
+let NERDTreeMinimalUI =1
+" 删除文件时自动删除文件对应 buffer
+let NERDTreeAutoDeleteBuffer =1
+" vim不指定具体文件打开是，自动使用nerdtree
+autocmd StdinReadPre * let s:std_in =1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" 当vim打开一个目录时，nerdtree自动使用
+autocmd StdinReadPre * let s:std_in =1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+" 当vim中没有其他文件，只剩下nerdtree的时候，自动关闭窗口
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" }@}
 
-    " NerdtreeGitPlugin {@{
-        let g:NERDTreeIndicatorMapCustom ={
+" NerdtreeGitPlugin {@{
+let g:NERDTreeIndicatorMapCustom ={
             \ "Modified"  : "*",
             \ "Staged"    : "+",
             \ "Untracked" : "☆",
@@ -620,219 +680,302 @@ endfunction
             \ "Ignored"   : "◎",
             \ "Unknown"   : "?"
             \ }
-    " }@}
+" }@}
 
-    " VimIndentGuides {@{
-        " 随 vim 自启动
-        let g:indent_guides_enable_on_vim_startup =1
+" VimIndentGuides {@{
+" 随 vim 自启动
+let g:indent_guides_enable_on_vim_startup =1
 
-        " 从第二层开始可视化显示缩进
-        let g:indent_guides_start_level =2
+" 从第二层开始可视化显示缩进
+let g:indent_guides_start_level =2
 
-        " 色块宽度
-        let g:indent_guides_guide_size =1
-    " }@}
+" 色块宽度
+let g:indent_guides_guide_size =1
+" }@}
 
-    " YouCompleteMe {@{
-        if has("win32")
-            "let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/plugged/YouCompleteMe-x86/python/.ycm_extra_conf.py'
-        elseif has("win64")
-            let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/plugged/YouCompleteMe-x64/python/.ycm_extra_conf.py'
-        else
-            let g:ycm_global_ycm_extra_conf = $HOME.'/.vim/plugged/YouCompleteMe/python/.ycm_extra_conf.py'
-        endif
+" YouCompleteMe {@{
+if has("win32")
+    "let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/plugged/YouCompleteMe-x86/python/.ycm_extra_conf.py'
+elseif has("win64")
+    let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/plugged/YouCompleteMe-x64/python/.ycm_extra_conf.py'
+else
+    let g:ycm_global_ycm_extra_conf = $HOME.'/.vim/plugged/YouCompleteMe/python/.ycm_extra_conf.py'
+endif
 
-        "" YCM 补全菜单配色
-        "" 菜单
-        "highlight Pmenu ctermfg=2 ctermbg=3 guifg=#005f87 guibg=#EEE8D5
-        "" 选中项
-        "highlight PmenuSel ctermfg=2 ctermbg=3 guifg=#AFD700 guibg=#106900
-        "" 补全功能在注释中同样有效
-        "let g:ycm_complete_in_comments=1
-        "" 允许 vim 加载 .ycm_extra_conf.py 文件，不再提示
-        "let g:ycm_confirm_extra_conf=0
-        "" 开启 YCM 标签补全引擎
-        "let g:ycm_collect_identifiers_from_tags_files=1
-        "" 引入 C++ 标准库tags
-        "set tags+=/data/misc/software/misc./vim/stdcpp.tags
-        "" YCM 集成 OmniCppComplete 补全引擎，设置其快捷键
-        "inoremap <leader>; <C-x><C-o>
-        "" 补全内容不以分割子窗口形式出现，只显示补全列表
-        "set completeopt-=preview
-        "" 从第一个键入字符就开始罗列匹配项
-        "let g:ycm_min_num_of_chars_for_completion=1
-        "" 禁止缓存匹配项，每次都重新生成匹配项
-        "let g:ycm_cache_omnifunc=0
-        "" 语法关键字补全			
-        "let g:ycm_seed_identifiers_with_syntax=1
-        "" 开启 YCM 标签引擎
-        "let g:ycm_collect_identifiers_from_tags_files=1
-        "" 引入 C++ 标准库tags
-        "set tags+=/data/misc/software/misc./vim/stdcpp.tags
+"" YCM 补全菜单配色
+"" 菜单
+"highlight Pmenu ctermfg=2 ctermbg=3 guifg=#005f87 guibg=#EEE8D5
+"" 选中项
+"highlight PmenuSel ctermfg=2 ctermbg=3 guifg=#AFD700 guibg=#106900
+"" 补全功能在注释中同样有效
+"let g:ycm_complete_in_comments=1
+"" 允许 vim 加载 .ycm_extra_conf.py 文件，不再提示
+"let g:ycm_confirm_extra_conf=0
+"" 开启 YCM 标签补全引擎
+"let g:ycm_collect_identifiers_from_tags_files=1
+"" 引入 C++ 标准库tags
+"set tags+=/data/misc/software/misc./vim/stdcpp.tags
+"" YCM 集成 OmniCppComplete 补全引擎，设置其快捷键
+"inoremap <leader>; <C-x><C-o>
+"" 补全内容不以分割子窗口形式出现，只显示补全列表
+"set completeopt-=preview
+"" 从第一个键入字符就开始罗列匹配项
+"let g:ycm_min_num_of_chars_for_completion=1
+"" 禁止缓存匹配项，每次都重新生成匹配项
+"let g:ycm_cache_omnifunc=0
+"" 语法关键字补全
+"let g:ycm_seed_identifiers_with_syntax=1
+"" 开启 YCM 标签引擎
+"let g:ycm_collect_identifiers_from_tags_files=1
+"" 引入 C++ 标准库tags
+"set tags+=/data/misc/software/misc./vim/stdcpp.tags
 
-        if IsWindows()
-            set rtp +='$VIM/vimfiles/plugged/plugged/YouCompleteMe'
-        else
-            set rtp +='~/.vim/plugged' 
-        end
-        let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-        "let g:ycm_path_to_python_interpreter = $PYTHON_HOME.'/python.exe"
-        let g:ycm_path_to_python_interpreter = 'D:/Develop/Python27/python.exe'
-    " }@}
+if IsWindows()
+    set rtp +='$VIM/vimfiles/plugged/plugged/YouCompleteMe'
+else
+    set rtp +='~/.vim/plugged'
+end
+let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+"let g:ycm_path_to_python_interpreter = $PYTHON_HOME.'/python.exe"
+let g:ycm_path_to_python_interpreter = 'D:/Develop/Python27/python.exe'
+" }@}
 
-    " Slimv {@{
-        if IsLinux()
-            let g:slimv_swank_cmd ='! xterm -e sbcl --load /usr/share/common-lisp/source/slime/start-swank.lisp &'
-        elseif IsWindows()
-            let g:slimv_swank_cmd ='!start "D:/Develop/ccl19/wx86cl.exe" -l' . $VIM.'/vimfiles/plugged/slimv/slime/start-swank.lisp'
-            "let g:slimv_swank_cmd ='!start "D:/Develop/Steel Bank Common Lisp/1.3.1/sbcl.exe" --load' . $VIM.'/vimfiles/plugged/slimv/slime/start-swank.lisp'
-        endif
+" Slimv {@{
+if IsLinux()
+    let g:slimv_swank_cmd ='! xterm -e sbcl --load /usr/share/common-lisp/source/slime/start-swank.lisp &'
+elseif IsWindows()
+    let g:slimv_swank_cmd ='!start "D:/Develop/ccl19/wx86cl.exe" -l' . $VIM.'/vimfiles/plugged/slimv/slime/start-swank.lisp'
+    "let g:slimv_swank_cmd ='!start "D:/Develop/Steel Bank Common Lisp/1.3.1/sbcl.exe" --load' . $VIM.'/vimfiles/plugged/slimv/slime/start-swank.lisp'
+endif
 
-        " enabled rainbow parenthesis
-        let g:lisp_rainbow =1
+" enabled rainbow parenthesis
+let g:lisp_rainbow =1
 
-        let g:slimv_leader =','
+let g:slimv_leader =','
 
-        let g:paredit_mode =0
+let g:paredit_mode =0
 
-        let g:paredit_electric_return =1
-    " }@}
+let g:paredit_electric_return =1
+" }@}
 
-    " Ack {@{
-    " references: https://blog.csdn.net/Demorngel/article/details/71147697
-        " 调用rg进行搜索, https://segmentfault.com/a/1190000016170184
-        if executable('rg')
-            let g:ackprg = 'rg --vimgrep'
-        endif
-        " 调用ag进行搜索
-        "if executable('ag')
-        "    let g:ackprg = 'ag --vimgrep'
-        "endif
-        let g:ackhighlight = 1
-    " }@}
+" Ack {@{
+" references: https://blog.csdn.net/Demorngel/article/details/71147697
+" 调用rg进行搜索, https://segmentfault.com/a/1190000016170184
+if executable('rg')
+    let g:ackprg = 'rg --vimgrep'
+endif
+" 调用ag进行搜索
+"if executable('ag')
+"    let g:ackprg = 'ag --vimgrep'
+"endif
+let g:ackhighlight = 1
+" }@}
 
-    " CtrlSF {@{
-        let g:ctrlsf_search_mode = 'async'
-        let g:ctrlsf_winsize = "20%"
-    " }@}
+" CtrlSF {@{
+let g:ctrlsf_search_mode = 'async'
+let g:ctrlsf_winsize = "20%"
+" }@}
 
-    " Ale {@{
-        " 始终开启标志列
-        let g:ale_sign_column_always = 1
-        let g:ale_set_highlights = 0
-        " 自定义error和warning图标
-        let g:ale_sign_error = '✗'
-        let g:ale_sign_warning = '⚡'
-        " 在vim自带的状态栏中整合ale
-        let g:ale_statusline_format = ['✗ %d', '⚡ %d', '✔ OK']
-        " 显示Linter名称,出错或警告等相关信息
-        let g:ale_echo_msg_error_str = 'E'
-        let g:ale_echo_msg_warning_str = 'W'
-        let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-    " }@}
+" Ale {@{
+let g:ale_linters_explicit = 1
+let g:ale_completion_delay = 500
+let g:ale_echo_delay = 20
+let g:ale_lint_delay = 500
+let g:ale_echo_msg_format = '[%linter%] %code: %%s'
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 1
+let g:airline#extensions#ale#enabled = 1
 
-    " rainbow {@{
-        let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
-        let g:rainbow_conf = {
-                    \	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
-                    \	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
-                    \	'operators': '_,_',
-                    \	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
-                    \	'separately': {
-                    \		'*': {},
-                    \		'tex': {
-                    \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
-                    \		},
-                    \		'lisp': {
-                    \			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
-                    \		},
-                    \		'vim': {
-                    \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
-                    \		},
-                    \		'html': {
-                    \			'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
-                    \		},
-                    \		'css': 0,
-                    \	}
-                    \}
-    " }@}
+let g:ale_c_gcc_options = '-Wall -O2 -std=c99'
+let g:ale_cpp_gcc_options = '-Wall -O2 -std=c++14'
+let g:ale_c_cppcheck_options = ''
+let g:ale_cpp_cppcheck_options = ''
+let g:ale_sign_error = "\ue009\ue009"
+hi! clear SpellBad
+hi! clear SpellCap
+hi! clear SpellRare
+hi! SpellBad gui=undercurl guisp=red
+hi! SpellCap gui=undercurl guisp=blue
+hi! SpellRare gui=undercurl guisp=magenta
+" }@}
 
-    " incsearch {@{
-    " :h g:incsearch#auto_nohlsearch
-        set hlsearch
-        let g:incsearch#auto_nohlsearch = 1
-        map n  <Plug>(incsearch-nohl-n)
-        map N  <Plug>(incsearch-nohl-N)
-        map *  <Plug>(incsearch-nohl-*)
-        map #  <Plug>(incsearch-nohl-#)
-        map g* <Plug>(incsearch-nohl-g*)
-        map g# <Plug>(incsearch-nohl-g#)
-    " }@}
+" rainbow {@{
+let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
+let g:rainbow_conf = {
+            \ 'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+            \ 'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+            \ 'operators': '_,_',
+            \ 'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+            \ 'separately': {
+            \   '*': {},
+            \   'tex': {
+            \     'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+            \   },
+            \   'lisp': {
+            \     'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+            \   },
+            \   'vim': {
+            \     'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+            \   },
+            \   'html': {
+            \     'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+            \   },
+            \   'css': 0,
+            \ }
+            \}
+" devicons may be conflit with rainbow plugin
+let g:rainbow_conf = {
+            \    'separately': {
+            \       'nerdtree': 0
+            \    }
+            \}
+" }@}
 
-    " easymotion {@{
-        " <Leader>f{char} to move to {char}
-        map  <Leader>f <Plug>(easymotion-bd-f)
-        nmap <Leader>f <Plug>(easymotion-overwin-f)
+" incsearch {@{
+" :h g:incsearch#auto_nohlsearch
+set hlsearch
+let g:incsearch#auto_nohlsearch = 1
+map n  <Plug>(incsearch-nohl-n)
+map N  <Plug>(incsearch-nohl-N)
+map *  <Plug>(incsearch-nohl-*)
+map #  <Plug>(incsearch-nohl-#)
+map g* <Plug>(incsearch-nohl-g*)
+map g# <Plug>(incsearch-nohl-g#)
+" }@}
 
-        " s{char}{char} to move to {char}{char}
-        nmap s <Plug>(easymotion-overwin-f2)
+" easymotion {@{
+" <Leader>f{char} to move to {char}
+map  <Leader>f <Plug>(easymotion-bd-f)
+nmap <Leader>f <Plug>(easymotion-overwin-f)
 
-        " Move to line
-        map <Leader>L <Plug>(easymotion-bd-jk)
-        nmap <Leader>L <Plug>(easymotion-overwin-line)
+" s{char}{char} to move to {char}{char}
+nmap s <Plug>(easymotion-overwin-f2)
 
-        " Move to word
-        map  <Leader>w <Plug>(easymotion-bd-w)
-        nmap <Leader>w <Plug>(easymotion-overwin-w)
-    " }@}
+" Move to line
+map <Leader>L <Plug>(easymotion-bd-jk)
+nmap <Leader>L <Plug>(easymotion-overwin-line)
 
-    " matchup {@{
-        let g:loaded_matchit = 1
-    " }@}
+" Move to word
+map  <Leader>w <Plug>(easymotion-bd-w)
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+" }@}
 
-    " matchmaker {@{
-        let g:matchmaker_enable_startup = 1
-        let g:matchmaker_ignore_single_match = 1
-        let g:matchmaker_matchpriority = 0
-    " }@}
+" matchup {@{
+let g:loaded_matchit = 1
+" }@}
 
-    " gutentags {@{
-        " gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
-        let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
+" matchmaker {@{
+let g:matchmaker_enable_startup = 1
+let g:matchmaker_ignore_single_match = 1
+let g:matchmaker_matchpriority = 0
+" }@}
 
-        " 所生成的数据文件的名称
-        let g:gutentags_ctags_tagfile = '.tags'
+" gutentags {@{
+" gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
+let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
 
-        " 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
-        let s:vim_tags = expand('~/.cache/tags')
-        let g:gutentags_cache_dir = s:vim_tags
+" 所生成的数据文件的名称
+let g:gutentags_ctags_tagfile = '.tags'
 
-        " 配置 ctags 的参数
-        let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
-        let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
-        let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+" 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
+let s:vim_tags = expand('~/.cache/tags')
+let g:gutentags_cache_dir = s:vim_tags
 
-        " 检测 ~/.cache/tags 不存在就新建
-        if !isdirectory(s:vim_tags)
-            silent! call mkdir(s:vim_tags, 'p')
-        endif
-    " }@}
+" 配置 ctags 的参数
+let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
 
-    " leaderf {@{
-        noremap <leader>ff :LeaderfFile<cr>
-        noremap <leader>ffm :LeaderfMru<cr>
-        noremap <leader>ffu :LeaderfFunction<cr>
-        noremap <leader>fb :LeaderfBuffer<cr>
-        noremap <leader>ft :LeaderfBufTag<cr>
-        let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
+" 检测 ~/.cache/tags 不存在就新建
+if !isdirectory(s:vim_tags)
+    silent! call mkdir(s:vim_tags, 'p')
+endif
+" }@}
 
-        let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
-        let g:Lf_WorkingDirectoryMode = 'Ac'
-        let g:Lf_WindowHeight = 0.30
-        let g:Lf_CacheDirectory = expand('~/.vim/cache')
-        let g:Lf_ShowRelativePath = 0
-        let g:Lf_HideHelp = 1
-        let g:Lf_StlColorscheme = 'powerline'
-        let g:Lf_PreviewResult = {'Function':0, 'BufTag':0}
-    " }@}
+" leaderf {@{
+noremap <leader>ff :LeaderfFile<cr>
+noremap <leader>ffm :LeaderfMru<cr>
+noremap <leader>ffu :LeaderfFunction<cr>
+noremap <leader>fb :LeaderfBuffer<cr>
+noremap <leader>ft :LeaderfBufTag<cr>
+let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
+
+let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
+let g:Lf_WorkingDirectoryMode = 'Ac'
+let g:Lf_WindowHeight = 0.30
+let g:Lf_CacheDirectory = expand('~/.vim/cache')
+let g:Lf_ShowRelativePath = 0
+let g:Lf_HideHelp = 1
+let g:Lf_StlColorscheme = 'powerline'
+let g:Lf_PreviewResult = {'Function':0, 'BufTag':0}
+" }@}
+
+" airline {@{
+" reference: https://www.jianshu.com/p/310368097c75
+"            https://mounui.com/331.html
+" 这个是安装字体后 必须设置此项"
+let g:airline_powerline_fonts = 1
+if !exists('g:airline_symbols')
+    let g:airline_symbols={}
+endif
+" 打开tabline功能
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#formatter = 'default'
+" 关闭状态显示空白符号计数
+let g:airline#extensions#whitespace#enabled = 0
+let g:airline#extensions#whitespace#symbol = '!'
+" 设置切换Buffer快捷键
+nnoremap <leader>bn :bn<CR>
+nnoremap <leader>bp :bp<CR>
+set lazyredraw
+
+" Vim 在与屏幕/键盘交互时使用的编码(取决于实际的终端的设定)
+set langmenu=zh_CN.UTF-8
+" 设置打开文件的编码格式
+set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
+set fileencoding=utf-8
+" 设置中文帮助
+set helplang=cn
+" 设置字体
+"set guifont=Powerline_Consolas:h16
+" }@}
+
+" airline-themes {@{
+let g:airline_theme='solarized'
+let g:airline_solarized_bg='dark'
+" }@}
+
+" autoformat {@{
+"au BufWrite * :Autoformat
+noremap <leader>cf :Autoformat<CR>
+" }@}
+
+" echodoc {@{
+" Or, you could disable showmode alltogether.
+set noshowmode
+let g:echodoc_enable_at_startup = 1
+" }@}
+
+" nerdtree-syntax-highlight {@{
+" highlight full name (not only icons)
+let g:NERDTreeFileExtensionHighlightFullName = 1
+let g:NERDTreeExactMatchHighlightFullName = 1
+let g:NERDTreePatternMatchHighlightFullName = 1
+" highlight folders using exact match
+let g:NERDTreeHighlightFolders = 1 " enables folder icon highlighting using exact match
+let g:NERDTreeHighlightFoldersFullName = 1 " highlights the folder name
+" }@}
+
+" devicons {@{
+"set guifont=Monoid_Nerd_Font:h16
+set guifont=DroidSansMono_Nerd_Font:h16
+" }@}
+
+" airline-weather {@{
+let g:weather#area = 'chengducity,ch'
+let g:weather#unit = 'metric'
+" }@}
 " }@}
