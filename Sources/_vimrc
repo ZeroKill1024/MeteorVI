@@ -588,7 +588,7 @@ Plug 'kovisoft/slimv'
 " lua support
 Plug 'xolox/vim-misc'          " required by lua.vim
 Plug 'xolox/vim-lua-ftplugin'  " lua file type plug-in for the vim text editor
-" golang support, reference: https://blog.csdn.net/zhang197093/article/details/78559903?locationNum=5&fps=1
+" golang support, references: https://blog.csdn.net/zhang197093/article/details/78559903?locationNum=5&fps=1
 Plug 'fatih/vim-go'
 Plug 'nsf/gocode', {'rtp': 'vim/'}
 " version control
@@ -604,7 +604,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'enricobacis/vim-airline-clock'
 Plug 'mattn/webapi-vim'
-"Plug 'Wildog/airline-weather.vim'
+Plug 'Wildog/airline-weather.vim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
@@ -641,7 +641,7 @@ Plug 'skywind3000/asyncrun.vim'
 call plug#end()
 
 " NERDTree {@{
-" reference: https://segmentfault.com/a/1190000015143474
+" references: https://segmentfault.com/a/1190000015143474
 " 在 vim 启动的时候默认开启 NERDTree（autocmd 可以缩写为 au）
 autocmd VimEnter * NERDTree
 " 将 NERDTree 的窗口设置在 vim 窗口的右侧（默认为左侧）
@@ -911,7 +911,7 @@ let g:Lf_PreviewResult = {'Function':0, 'BufTag':0}
 " }@}
 
 " airline {@{
-" reference: https://www.jianshu.com/p/310368097c75
+" references: https://www.jianshu.com/p/310368097c75
 "            https://mounui.com/331.html
 " 这个是安装字体后 必须设置此项"
 let g:airline_powerline_fonts = 1
@@ -977,5 +977,8 @@ set guifont=DroidSansMono_Nerd_Font:h16
 " airline-weather {@{
 let g:weather#area = 'chengducity,ch'
 let g:weather#unit = 'metric'
+" }@}
+" cscope {@{
+" references: https://blog.csdn.net/kecise/article/details/7000364
 " }@}
 " }@}
