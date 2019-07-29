@@ -331,6 +331,7 @@ nmap <leader>w' <C-W>=
 
 " 打开terminal窗口
 nnoremap <leader>wt :term<CR>
+" TODO:
 " 隐藏terminal窗口
 nnoremap <C-W>wth :hide<CR>
 " 关闭terminal窗口
@@ -432,7 +433,6 @@ nmap <leader>sfl <Plug>CtrlSFPwordPath
 
 " Ale {@{
 " https://github.com/w0rp/ale/blob/master/doc/ale.txt
-" https://blog.csdn.net/Demorngel/article/details/69052789
 " 普通模式下，sp前往上一个错误或警告，sn前往下一个错误或警告
 nmap sp <Plug>(ale_previous_wrap)
 nmap sn <Plug>(ale_next_wrap)
@@ -582,7 +582,6 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'derekwyatt/vim-fswitch'
 Plug 'derekwyatt/vim-protodef'
 Plug 'scrooloose/nerdcommenter'
-Plug 'Valloric/YouCompleteMe'
 " lisp support
 Plug 'kovisoft/slimv'
 " lua support
@@ -613,12 +612,7 @@ Plug 'terryma/vim-multiple-cursors'
 " codes
 Plug 'w0rp/ale'
 "Plugin 'lyokha/vim-xkbswitch'
-if has("win32")
-    "Plugin 'snakeleon/YouCompleteMe-x86'
-elseif has("win64")
-    Plug 'snakeleon/YouCompleteMe-x64'
-else
-endif
+Plug 'ycm-core/YouCompleteMe'
 Plug 'Chiel92/vim-autoformat'
 Plug 'junegunn/vim-easy-align'
 Plug 'octol/vim-cpp-enhanced-highlight'
@@ -694,13 +688,15 @@ let g:indent_guides_guide_size =1
 " }@}
 
 " YouCompleteMe {@{
-if has("win32")
-    "let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/plugged/YouCompleteMe-x86/python/.ycm_extra_conf.py'
-elseif has("win64")
-    let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/plugged/YouCompleteMe-x64/python/.ycm_extra_conf.py'
-else
-    let g:ycm_global_ycm_extra_conf = $HOME.'/.vim/plugged/YouCompleteMe/python/.ycm_extra_conf.py'
-endif
+let g:ycm_server_keep_logfiles = 1
+let g:ycm_server_log_level = 'debug'
+"if has("win32")
+"    "let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/plugged/YouCompleteMe-x86/python/.ycm_extra_conf.py'
+"elseif has("win64")
+"    let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/plugged/YouCompleteMe-x64/python/.ycm_extra_conf.py'
+"else
+"    let g:ycm_global_ycm_extra_conf = $HOME.'/.vim/plugged/YouCompleteMe/python/.ycm_extra_conf.py'
+"endif
 
 "" YCM 补全菜单配色
 "" 菜单
@@ -730,14 +726,14 @@ endif
 "" 引入 C++ 标准库tags
 "set tags+=/data/misc/software/misc./vim/stdcpp.tags
 
-if IsWindows()
-    set rtp +='$VIM/vimfiles/plugged/plugged/YouCompleteMe'
-else
-    set rtp +='~/.vim/plugged'
-end
-let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-"let g:ycm_path_to_python_interpreter = $PYTHON_HOME.'/python.exe"
-let g:ycm_path_to_python_interpreter = 'D:/Develop/Python27/python.exe'
+"if IsWindows()
+"    set rtp +='$VIM/vimfiles/plugged/plugged/YouCompleteMe'
+"else
+"    set rtp +='~/.vim/plugged'
+"end
+"let g:ycm_global_ycm_extra_conf = $VIM.'/vimfiles/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+""let g:ycm_path_to_python_interpreter = $PYTHON_HOME.'/python.exe"
+"let g:ycm_path_to_python_interpreter = 'D:/Develop/Python27/python.exe'
 " }@}
 
 " Slimv {@{
@@ -777,6 +773,7 @@ let g:ctrlsf_winsize = "20%"
 " }@}
 
 " Ale {@{
+" references: https://blog.csdn.net/Demorngel/article/details/69052789
 let g:ale_linters_explicit = 1
 let g:ale_completion_delay = 500
 let g:ale_echo_delay = 20
@@ -797,6 +794,11 @@ hi! clear SpellRare
 hi! SpellBad gui=undercurl guisp=red
 hi! SpellCap gui=undercurl guisp=blue
 hi! SpellRare gui=undercurl guisp=magenta
+" 格式化代码，需要自行配置
+autocmd FileType python noremap <buffer> <leader>cpf :ALEFix<CR>
+let g:ale_fixers = {
+\ 'python': ['add_blank_lines_for_python_control_statements','autopep8','isort','yapf','remove_trailing_lines','trim_whitespace'],
+\}
 " }@}
 
 " rainbow {@{
@@ -949,12 +951,14 @@ let g:airline_solarized_bg='dark'
 " }@}
 
 " autoformat {@{
+" references: https://blog.csdn.net/demorngel/article/details/69053613
+" TODO: should be async
 "au BufWrite * :Autoformat
 noremap <leader>cf :Autoformat<CR>
 " }@}
 
 " echodoc {@{
-" Or, you could disable showmode alltogether.
+" you could disable showmode alltogether.
 set noshowmode
 let g:echodoc_enable_at_startup = 1
 " }@}
@@ -977,5 +981,14 @@ set guifont=DroidSansMono_Nerd_Font:h16
 " airline-weather {@{
 let g:weather#area = 'chengducity,ch'
 let g:weather#unit = 'metric'
+" }@}
+
+" easy-align {@{
+vmap <leader>ca <Plug>(EasyAlign)
+nmap <leader>ca <Plug>(EasyAlign)
+if !exists('g:easy_align_delimiters')
+  let g:easy_align_delimiters = {}
+endif
+let g:easy_align_delimiters['#'] = { 'pattern': '#', 'ignore_groups': ['String'] }
 " }@}
 " }@}
