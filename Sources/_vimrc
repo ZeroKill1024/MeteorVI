@@ -613,7 +613,7 @@ if IsWindows()
     "(New-Object Net.WebClient).DownloadFile(
     "$uri,
     "$ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath(
-    ""$VIMRUNTIME\autoload\plug.vim"
+    ""$VIM\vimfiles\autoload\plug.vim"
     ")
     ")
     call plug#begin('$VIM/vimfiles/plugged/')
@@ -709,6 +709,7 @@ call plug#end()
 
 " NERDTree {@{
 " reference: https://segmentfault.com/a/1190000015143474
+" TODO: should be async
 " 在 vim 启动的时候默认开启 NERDTree（autocmd 可以缩写为 au）
 autocmd VimEnter * NERDTree
 " 将 NERDTree 的窗口设置在 vim 窗口的右侧（默认为左侧）
@@ -1071,5 +1072,109 @@ if !exists('g:easy_align_delimiters')
   let g:easy_align_delimiters = {}
 endif
 let g:easy_align_delimiters['#'] = { 'pattern': '#', 'ignore_groups': ['String'] }
+" }@}
+
+" indentLine {@{
+map <leader>int :IndentLinesToggle<CR>
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+" }@}
+
+" context_filetype {@{
+function! s:checker(filename)
+	try
+		let pos = getpos(".")
+		let filetype_pattern = '`\w\+`'
+		let result = ""
+
+		normal! gg0
+		while search(filetype_pattern, 'W')
+			if context_filetype#get_filetype() !=# expand('<cword>')
+				let result .= printf("%s:%d: bad context filetype\n", a:filename, line('.'))
+			endif
+		endwhile
+
+		cgetexpr result
+		cwindo
+	finally
+		call setpos(".", pos)
+	endtry
+endfunction
+
+command! ContextFiletypeTest call s:checker(expand("%:p"))
+" }@}
+
+" precious {@{
+let g:precious_enable_switch_CursorMoved = {
+      \	"*" : 0
+      \}
+let g:precious_enable_switch_CursorMoved_i = {
+      \	"*" : 0
+      \}
+
+augroup test0
+  autocmd!
+  autocmd InsertEnter * :PreciousSwitch
+  autocmd InsertLeave * :PreciousReset
+augroup END
+
+nmap <Space>q <Plug>(precious-quickrun-op)
+omap ic <Plug>(textobj-precious-i)
+vmap ic <Plug>(textobj-precious-i)
+
+let g:precious_enable_switchers = {
+      \	"vim" : {
+      \		"setfiletype" : 0
+      \	},
+      \}
+
+let g:precious_enable_switchers = {
+      \	"*" : {
+      \		"setfiletype" : 0
+      \	},
+      \	"vim" : {
+      \		"setfiletype" : 1
+      \	},
+      \}
+
+let g:precious_enable_switch_CursorMoved = {
+      \	"help" : 0
+      \}
+
+let g:precious_enable_switch_CursorMoved_i= {
+      \	"help" : 0
+      \}
+
+let g:precious_enable_switchers = {
+      \	"*" : {
+      \		"setfiletype" : 0
+      \	},
+      \}
+
+augroup test1
+  autocmd!
+  autocmd User PreciousFileType let &l:syntax = precious#context_filetype()
+augroup END
+
+augroup precious-indentLine
+  autocmd!
+  autocmd User PreciousFileType IndentLinesReset
+augroup END
+
+" TODO: its not work
+augroup test2
+	autocmd!
+	autocmd User PreciousFileType      :echo precious#context_filetype()
+	autocmd User PreciousFiletype_ruby :PreciousSetContextLocal tabstop=8
+augroup END
+" }@}
+
+" quickrun {@{
+let g:quickrun_config = {
+\   "_" : {
+\       "outputter" : "message",
+\   },
+\}
+let g:quickrun_no_default_key_mappings = 1
+nmap <Leader>qr <Plug>(quickrun)
 " }@}
 " }@}
