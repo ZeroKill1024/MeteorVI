@@ -233,6 +233,15 @@ let gssearch = "gsf"
 let dssearch = "dsf"
 " 当前文件搜索
 let fssearch = "fsf"
+
+" buffer
+" <leader>b*
+
+" codes
+" <leader>c*
+
+" file
+" <leader>f*
 " }@}
 
 " defined <leader>
@@ -351,29 +360,29 @@ nmap <leader>wqo <C-W>o
 
 " 标签操作 {@{
 " 新建标签
-nmap <leader>tc :tabnew<CR>
+nmap <leader>tac :tabnew<CR>
 
 " 关闭标签
-nmap <leader>tq :tabc<CR>
+nmap <leader>taq :tabc<CR>
 
 " 在新标签中打开当前缓冲区中的文件
-nmap <leader>to :tab split<CR>
+nmap <leader>tao :tab split<CR>
 
 " 跳转到下/上一个标签, 标准模式下gt gT可以直接在tab之间切换
-nmap <leader>tn :tabn<CR>
-nmap <leader>tp :tabp<CR>
+nmap <leader>tan :tabn<CR>
+nmap <leader>tap :tabp<CR>
 
 " 跳转到第一个标签
-nmap <leader>tf :tabfirst<CR>
+nmap <leader>taf :tabfirst<CR>
 
 " 跳转到最后一个标签
-nmap <leader>tl :tablast<CR>
+nmap <leader>tal :tablast<CR>
 
 " 移动标签
 "nmap <leader>tm :tabm 1
 
 " 显示标签列表
-nmap <leader>ts :tabs<CR>
+nmap <leader>tas :tabs<CR>
 " }@}
 
 " terminal操作 {@{
@@ -407,7 +416,7 @@ nnoremap <leader>bp :bp<CR>
 " 之前所在的buffe
 nnoremap <leader>bl :b#<CR>
 " 关闭所有非当前buffer
-command! BQuitOthers call <SID>BufQuitOthers()
+command! BQuitOthers call BufQuitOthers()
 function! BufQuitOthers()
    let l:currentBufNum   = bufnr("%")
    let l:alternateBufNum = bufnr("#")
@@ -635,7 +644,8 @@ Plug 'lilydjwg/fcitx.vim'
 Plug 'derekwyatt/vim-protodef'
 " lisp support
 Plug 'kovisoft/slimv'
-" lua support
+" lua support, https://blog.csdn.net/ding_yingzi/article/details/81517401
+" Plug 'xolox/vim-lua-inspect'
 Plug 'xolox/vim-misc'          " required by lua.vim
 Plug 'xolox/vim-lua-ftplugin'  " lua file type plug-in for the vim text editor
 " golang support, reference: https://blog.csdn.net/zhang197093/article/details/78559903?locationNum=5&fps=1
@@ -645,7 +655,7 @@ Plug 'nsf/gocode', {'rtp': 'vim/'}
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 Plug 'mhinz/vim-signify'
-Plug 'whiteinge/diffconflicts'
+Plug 'samoshkin/vim-mergetool'
 Plug 'airblade/vim-gitgutter'
 " eiditor
 Plug 'luochen1990/rainbow'
@@ -690,9 +700,12 @@ Plug 'tpope/vim-surround'
 Plug 'scrooloose/nerdcommenter'  " 注释
 Plug 'vim-scripts/DoxygenToolkit.vim'
 Plug 'Yggdroot/indentLine'
-" string search
+Plug 'jiangmiao/auto-pairs'
+Plug 'mh21/errormarker.vim'
+" string search and replace
 Plug 'mileszs/ack.vim'
 Plug 'dyng/ctrlsf.vim'
+Plug 'dkprice/vim-easygrep'
 " tags search
 Plug 'ludovicchabant/vim-gutentags'
 if IsWindows()
@@ -701,6 +714,10 @@ else
     Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 end
 Plug 'brookhong/cscope.vim'
+" compiler and debuger
+Plug 'xuhdev/SingleCompile'
+Plug 'Shougo/vimproc.vim'
+Plug 'idanarye/vim-vebugger'
 " others
 Plug 'skywind3000/asyncrun.vim'
 " }@}
@@ -985,16 +1002,22 @@ noremap <leader>ffm :LeaderfMru<cr>
 noremap <leader>ffu :LeaderfFunction<cr>
 noremap <leader>fb :LeaderfBuffer<cr>
 noremap <leader>ft :LeaderfBufTag<cr>
-let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
+noremap <leader>fs :LeaderfLine<cr>
 
+let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
 let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
 let g:Lf_WorkingDirectoryMode = 'Ac'
 let g:Lf_WindowHeight = 0.30
+if IsWindows()
 let g:Lf_CacheDirectory = expand('~/.vim/cache')
+else
+let g:Lf_CacheDirectory = expand($VIM.'/vimfiles/cache')
+endif
 let g:Lf_ShowRelativePath = 0
 let g:Lf_HideHelp = 1
 let g:Lf_StlColorscheme = 'powerline'
 let g:Lf_PreviewResult = {'Function':0, 'BufTag':0}
+let g:Lf_UseMemoryCache = 0
 " }@}
 
 " airline {@{
@@ -1076,7 +1099,20 @@ let g:easy_align_delimiters['#'] = { 'pattern': '#', 'ignore_groups': ['String']
 
 " indentLine {@{
 map <leader>int :IndentLinesToggle<CR>
+let g:indentLine_enabled = 1
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+let g:indentLine_leadingSpaceEnabled = 1
+
+function! SwitchIndentLine()
+  if 'python' == &filetype
+    :IndentLinesDisable
+    :LeadingSpaceEnable
+  else
+    :IndentLinesEnable
+    :LeadingSpaceDisable
+  endif
+endfunction
+autocmd BufEnter * call SwitchIndentLine()
 " }@}
 
 " context_filetype {@{
@@ -1105,11 +1141,21 @@ command! ContextFiletypeTest call s:checker(expand("%:p"))
 
 " precious {@{
 let g:precious_enable_switch_CursorMoved = {
-      \	"*" : 0
+      \	"*" : 1
       \}
 let g:precious_enable_switch_CursorMoved_i = {
-      \	"*" : 0
+      \	"*" : 1
       \}
+
+let g:precious_enable_switchers = {
+      \	"*" : {
+      \		"setfiletype" : 1
+      \	},
+      \}
+
+nmap <Space>q <Plug>(precious-quickrun-op)
+omap ic <Plug>(textobj-precious-i)
+vmap ic <Plug>(textobj-precious-i)
 
 augroup test0
   autocmd!
@@ -1117,54 +1163,21 @@ augroup test0
   autocmd InsertLeave * :PreciousReset
 augroup END
 
-nmap <Space>q <Plug>(precious-quickrun-op)
-omap ic <Plug>(textobj-precious-i)
-vmap ic <Plug>(textobj-precious-i)
-
-let g:precious_enable_switchers = {
-      \	"vim" : {
-      \		"setfiletype" : 0
-      \	},
-      \}
-
-let g:precious_enable_switchers = {
-      \	"*" : {
-      \		"setfiletype" : 0
-      \	},
-      \	"vim" : {
-      \		"setfiletype" : 1
-      \	},
-      \}
-
-let g:precious_enable_switch_CursorMoved = {
-      \	"help" : 0
-      \}
-
-let g:precious_enable_switch_CursorMoved_i= {
-      \	"help" : 0
-      \}
-
-let g:precious_enable_switchers = {
-      \	"*" : {
-      \		"setfiletype" : 0
-      \	},
-      \}
-
 augroup test1
   autocmd!
   autocmd User PreciousFileType let &l:syntax = precious#context_filetype()
 augroup END
 
-augroup precious-indentLine
-  autocmd!
-  autocmd User PreciousFileType IndentLinesReset
-augroup END
-
-" TODO: its not work
+" TODO: must set filetype=vim
 augroup test2
 	autocmd!
 	autocmd User PreciousFileType      :echo precious#context_filetype()
 	autocmd User PreciousFiletype_ruby :PreciousSetContextLocal tabstop=8
+augroup END
+
+augroup precious-indentLine
+  autocmd!
+  autocmd User PreciousFileType IndentLinesReset
 augroup END
 " }@}
 
@@ -1175,6 +1188,102 @@ let g:quickrun_config = {
 \   },
 \}
 let g:quickrun_no_default_key_mappings = 1
-nmap <Leader>qr <Plug>(quickrun)
+nmap <leader>qr <Plug>(quickrun)
+" }@}
+
+" nerdcommenter {@{
+" 默认：
+" <leader>cc 注释当前行和选中行
+" <leader>cn 没有发现和\cc有区别
+" <leader>c<空格> 如果被选区域有部分被注释，则对被选区域执行取消注释操作，其它情况执行反转注释操作
+" <leader>cm 对被选区域用一对注释符进行注释，前面的注释对每一行都会添加注释
+" <leader>ci 执行反转注释操作，选中区域注释部分取消注释，非注释部分添加注释
+" <leader>cs 添加性感的注释，代码开头介绍部分通常使用该注释
+" <leader>cy 添加注释，并复制被添加注释的部分
+" <leader>c$ 注释当前光标到改行结尾的内容
+" <leader>cA 跳转到该行结尾添加注释，并进入编辑模式
+" <leader>ca 转换注释的方式，比如： /**/和//
+" <leader>cl \cb 左对齐和左右对其，左右对其主要针对/**/
+" <leader>cu 取消注释
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
+
+" Use compact syntax for prettified multi-line comments
+let g:NERDCompactSexyComs = 1
+
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
+
+" Set a language to use its alternate delimiters by default
+let g:NERDAltDelims_java = 1
+
+" Add your own custom formats or override the defaults
+let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
+
+" Allow commenting and inverting empty lines (useful when commenting a region)
+let g:NERDCommentEmptyLines = 1
+
+" Enable trimming of trailing whitespace when uncommenting
+let g:NERDTrimTrailingWhitespace = 1
+
+" Enable NERDCommenterToggle to check all selected lines is commented or not 
+let g:NERDToggleCheckAllLines = 1
+map <leader>cc <plug>NERDCommenterComment
+map <leader>ccu <plug>NERDCommenterUncomment
+map <leader>ccf <plug>NERDCommenterSexy
+map <leader>cct <plug>NERDCommenterToggle
+" }@}
+
+" tagbar {@{
+let g:tagbar_type_lua = {
+      \ 'ctagstype' : 'lua',
+      \ 'kinds' : [
+      \ 'm:modules:0:0',
+      \ 'f:functions:0:1',
+      \ 'v:locals:0:0'
+      \ ],
+      \ 'sort' : 0
+      \ }
+" }@}
+
+" surround {@{
+" 正常模式
+" -----------
+" ds  ： 删除包围
+" cs  ： 修改包围
+" ys  ： 添加包围
+" yS  ： 添加包围并替换包围文本
+" yss ： 添加一行包围
+" ySs ： 添加包围内容独成一行
+" ySS ： 添加包围内容独成一行
+"
+" 可视模式
+" -----------
+" s   ： 给选中内容添加包围
+" S   ： 选中内容添加包围并独成一行
+"
+" 插入模式
+" -----------
+" <CTRL-s> ： 添加一个包围
+" <CTRL-s><CTRL-s> ： 添加包围内容独成一行
+" <CTRL-g>s ： 添加一个包围
+" <CTRL-g>S ： 添加包围内容独成一行
+" }@}
+
+" easygrep {@{
+" <Leader>vv  - Grep for the word under the cursor, match all occurences,
+"               like |gstar|
+" <Leader>vV  - Grep for the word under the cursor, match whole word, like
+"               |star|
+" <Leader>va  - Like vv, but add to existing list
+" <Leader>vA  - Like vV, but add to existing list
+" <Leader>vr  - Perform a global search on the word under the cursor
+"               and prompt for a pattern with which to replace it.
+" <Leader>vo  - Select the files to search in and set grep options
+" <Leader>vy* - Invoke any option from the options explorer, where * is the
+"               shortcut for that option.
+"               e.g. <Leader>vyr - toggles recursion
+"                    <Leader>vyb - sets buffer grepping mode
+"                    etc.
 " }@}
 " }@}
