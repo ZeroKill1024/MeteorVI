@@ -59,6 +59,9 @@ endfunction
 "             https://github.com/spf13/spf13-vim
 "             https://www.jianshu.com/p/923aec861af3(for mac)
 "             https://www.zhihu.com/question/47691414
+"             http://www.jfh.com/jfperiodical/article/2157?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io?
+"             https://blog.csdn.net/qq_41955653/article/details/86642940
+"             https://vim-adventures.com/
 
 " General Config {@{
 if IsWindows()
@@ -496,7 +499,6 @@ nmap <leader>sfl <Plug>CtrlSFPwordPath
 
 " Ale {@{
 " https://github.com/w0rp/ale/blob/master/doc/ale.txt
-" https://blog.csdn.net/Demorngel/article/details/69052789
 " 普通模式下，sp前往上一个错误或警告，sn前往下一个错误或警告
 nmap sp <Plug>(ale_previous_wrap)
 nmap sn <Plug>(ale_next_wrap)
@@ -543,6 +545,9 @@ set ruler
 
 " 开启行号显示
 set number
+
+" 开启相对行号
+set relativenumber
 
 " 高亮显示当前行/列
 set cursorline
@@ -642,12 +647,13 @@ Plug 'tomasr/molokai'
 Plug 'vim-scripts/phd'
 Plug 'lilydjwg/fcitx.vim'
 Plug 'derekwyatt/vim-protodef'
+Plug 'xolox/vim-misc'  " required by lua.vim, vim-session
 " lisp support
 Plug 'kovisoft/slimv'
-" lua support, https://blog.csdn.net/ding_yingzi/article/details/81517401
-" Plug 'xolox/vim-lua-inspect'
-Plug 'xolox/vim-misc'          " required by lua.vim
-Plug 'xolox/vim-lua-ftplugin'  " lua file type plug-in for the vim text editor
+" lua support, reference: https://blog.csdn.net/ding_yingzi/article/details/81517401
+Plug 'tbastos/vim-lua'
+" Plug 'xolox/vim-lua-inspect'  TODO: cause error
+" Plug 'xolox/vim-lua-ftplugin' TODO: conflict with ycm
 " golang support, reference: https://blog.csdn.net/zhang197093/article/details/78559903?locationNum=5&fps=1
 Plug 'fatih/vim-go'
 Plug 'nsf/gocode', {'rtp': 'vim/'}
@@ -657,7 +663,7 @@ Plug 'junegunn/gv.vim'
 Plug 'mhinz/vim-signify'
 Plug 'samoshkin/vim-mergetool'
 Plug 'airblade/vim-gitgutter'
-" eiditor
+" editor
 Plug 'luochen1990/rainbow'
 Plug 'haya14busa/incsearch.vim'
 Plug 'easymotion/vim-easymotion'
@@ -685,9 +691,13 @@ Plug 'Shougo/context_filetype.vim'  " 文件类型检测
 Plug 'kana/vim-textobj-user'
 Plug 'thinca/vim-quickrun'
 Plug 'osyo-manga/vim-precious'
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
 " text
 Plug 'lfv89/vim-interestingwords'
 Plug 'itchyny/vim-cursorword'
+Plug 'wellle/targets.vim'
+Plug 'voldikss/vim-translate-me'
 " codes
 Plug 'w0rp/ale'
 Plug 'ycm-core/YouCompleteMe'
@@ -702,6 +712,17 @@ Plug 'vim-scripts/DoxygenToolkit.vim'
 Plug 'Yggdroot/indentLine'
 Plug 'jiangmiao/auto-pairs'
 Plug 'mh21/errormarker.vim'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'  " https://www.jianshu.com/p/c0ba049878ca
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'AndrewRadev/quickpeek.vim'
+Plug 'AndrewRadev/tagalong.vim'
+Plug 'segeljakt/vim-silicon'
+Plug 'sheerun/vim-polyglot'
+Plug 'christoomey/vim-sort-motion'  " 排序
+Plug 'obreitwi/vim-sort-folds'
+Plug 'chiedo/vim-sort-blocks-by'
+Plug 'FooSoft/vim-argwrap'
 " string search and replace
 Plug 'mileszs/ack.vim'
 Plug 'dyng/ctrlsf.vim'
@@ -718,6 +739,8 @@ Plug 'brookhong/cscope.vim'
 Plug 'xuhdev/SingleCompile'
 Plug 'Shougo/vimproc.vim'
 Plug 'idanarye/vim-vebugger'
+" terminal
+Plug 'godlygeek/csapprox'
 " others
 Plug 'skywind3000/asyncrun.vim'
 " }@}
@@ -788,9 +811,10 @@ noremap <c-z> <NOP>
 " 自动补全配置
 " 函数原型预览窗口
 set completeopt=menu,menuone
-let g:ycm_add_preview_to_completeopt = 0
-" 屏蔽 YCM 的诊断信息
-let g:ycm_show_diagnostics_ui = 0
+" 补全预览
+let g:ycm_add_preview_to_completeopt = 1
+" YCM的诊断信息
+let g:ycm_show_diagnostics_ui = 1
 
 autocmd InsertLeave * if pumvisible() == 0|pclose|endif "离开插入模式后自动关闭预览窗口 
 inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"    "回车即选中当前项  
@@ -874,6 +898,16 @@ let g:ctrlsf_winsize = "20%"
 
 " Ale {@{
 " references: https://blog.csdn.net/Demorngel/article/details/69052789
+"始终开启标志列
+let g:ale_sign_column_always = 1
+let g:ale_set_highlights = 0
+"显示Linter名称,出错或警告等相关信息
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+
+let g:ale_java_javac_options = '-encoding UTF-8  -J-Duser.language=en'
+
 let g:ale_linters_explicit = 1
 let g:ale_completion_delay = 500
 let g:ale_echo_delay = 20
