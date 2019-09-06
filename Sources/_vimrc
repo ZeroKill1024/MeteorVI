@@ -651,7 +651,7 @@ Plug 'xolox/vim-misc'  " required by lua.vim, vim-session
 " lisp support
 Plug 'kovisoft/slimv'
 " lua support, reference: https://blog.csdn.net/ding_yingzi/article/details/81517401
-Plug 'tbastos/vim-lua'
+" Plug 'tbastos/vim-lua'
 " Plug 'xolox/vim-lua-inspect'  TODO: cause error
 " Plug 'xolox/vim-lua-ftplugin' TODO: conflict with ycm
 " golang support, reference: https://blog.csdn.net/zhang197093/article/details/78559903?locationNum=5&fps=1
@@ -1319,5 +1319,10 @@ let g:tagbar_type_lua = {
 "               e.g. <Leader>vyr - toggles recursion
 "                    <Leader>vyb - sets buffer grepping mode
 "                    etc.
+" }@}
+
+" errormarker {@{
+nmap <Leader>emc :ErrorAtCursor<CR>
+nmap <Leader>emr :RemoveErrorMarkers<CR>
 " }@}
 " }@}
