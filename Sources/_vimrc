@@ -678,14 +678,13 @@ Plug 'thaerkh/vim-workspace'
 Plug 'farmergreg/vim-lastplace'
 Plug 'mbbill/undotree'
 Plug 'xolox/vim-session'
-"Plug 'Wildog/airline-weather.vim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'MattesGroeger/vim-bookmarks'
-"Plugin 'lyokha/vim-xkbswitch'
+" Plugin 'lyokha/vim-xkbswitch'
 Plug 'majutsushi/tagbar'
 Plug 'derekwyatt/vim-fswitch'
 Plug 's3rvac/AutoFenc'  " 文件编码检测
@@ -717,9 +716,9 @@ Plug 'tpope/vim-surround'
 Plug 'scrooloose/nerdcommenter'  " 注释
 Plug 'vim-scripts/DoxygenToolkit.vim'
 Plug 'Yggdroot/indentLine'  " 对齐线
-" matchparen++.vim, hiPairs, vim-parenmatch can replace each other
+" matchparen++.vim, vim-parenmatch can replace each other
 " Plug 'https://www.vim.org/scripts/script.php?script_id=2059'  " matchparen++, 高亮光标当前所在括号对
-" Plug 'Yggdroot/hiPairs'
+Plug 'Yggdroot/hiPairs'
 Plug 'itchyny/vim-parenmatch'
 Plug 'jiangmiao/auto-pairs'
 Plug 'mh21/errormarker.vim'
@@ -763,6 +762,8 @@ Plug 'segeljakt/vim-silicon'  " 图片
 Plug 'ashisha/image.vim'
 Plug 'voldikss/vim-translator'  " 翻译
 Plug 'itchyny/calendar.vim'  " 日历
+" TODO: cause errors!
+" Plug 'Wildog/airline-weather.vim'
 " others
 Plug 'skywind3000/asyncrun.vim'
 " }@}
@@ -1058,26 +1059,30 @@ let g:Lf_IgnoreCurrentBufferName = 1
 " popup mode
 let g:Lf_WindowPosition = 'popup'
 let g:Lf_PreviewInPopup = 1
+let g:Lf_PopupShowStatusline = 0
 " let g:Lf_StlSeparator = { 'left': "\ue0b0", 'right': "\ue0b2", 'font': "DejaVu Sans Mono for Powerline" }
 let g:Lf_StlSeparator = { 'left': "\ue0b0", 'right': "\ue0b2", 'font': "" }
 let g:Lf_PreviewResult = {'Function': 0, 'BufTag': 0 }
 
-let g:Lf_ShortcutF = '<leader>lff'
-noremap <leader>lfu :LeaderfFunction<cr>
-noremap <leader>lfb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
-noremap <leader>lfm :<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>
-noremap <leader>lft :<C-U><C-R>=printf("Leaderf bufTag %s", "")<CR><CR>
-noremap <leader>lfl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
+" let g:Lf_ShortcutF = '<leader>lff'
+" noremap <leader>lfu :LeaderfFunction<cr>
+noremap <leader>lff :<C-U><C-R>=printf("Leaderf file %s --nowrap", "")<CR><CR>
+noremap <leader>lfm :<C-U><C-R>=printf("Leaderf mru %s --nowrap", "")<CR><CR>
+noremap <leader>lfb :<C-U><C-R>=printf("Leaderf buffer %s --nowrap", "")<CR><CR>
+noremap <leader>lft :<C-U><C-R>=printf("Leaderf bufTag %s --nowrap", "")<CR><CR>
+noremap <leader>lfu :<C-U><C-R>=printf("Leaderf function %s --nowrap", "")<CR><CR>
+noremap <leader>lfl :<C-U><C-R>=printf("Leaderf line %s --nowrap", "")<CR><CR>
 
-" VAX styles
-noremap <M-O> :LeaderfFile<cr>
-noremap <M-R> :LeaderfMru<cr>
-noremap <M-m> :LeaderfFunction<cr>
-noremap <M-S> :LeaderfBufTag<cr>
-inoremap <M-O> :<esc>LeaderfFile<cr>
-inoremap <M-R> :<esc>LeaderfMru<cr>
-inoremap <M-m> :<esc>LeaderfFunction<cr>
-inoremap <M-S> :<esc>LeaderfBufTag<cr>
+" VAX shortcut styles
+" alt + [shift] + o/r/s/m
+noremap <M-O> <esc>:<C-U><C-R>=printf("Leaderf file %s --nowrap", "")<CR><CR>
+noremap <M-R> <esc>:<C-U><C-R>=printf("Leaderf mru %s --nowrap", "")<CR><CR>
+noremap <M-S> <esc>:<C-U><C-R>=printf("Leaderf bufTag %s --nowrap", "")<CR><CR>
+noremap <M-m> <esc>:<C-U><C-R>=printf("Leaderf function %s --bottom --nowrap", "")<CR><CR>
+inoremap <M-O> <esc>:<C-U><C-R>=printf("Leaderf file %s --nowrap", "")<CR><CR>
+inoremap <M-R> <esc>:<C-U><C-R>=printf("Leaderf mru %s --nowrap", "")<CR><CR>
+inoremap <M-S> <esc>:<C-U><C-R>=printf("Leaderf bufTag %s --nowrap", "")<CR><CR>
+inoremap <M-m> <esc>:<C-U><C-R>=printf("Leaderf function %s --bottom --nowrap", "")<CR><CR>
 
 noremap <C-B> :<C-U><C-R>=printf("Leaderf! rg --current-buffer -e %s ", expand("<cword>"))<CR>
 noremap <C-F> :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR>
