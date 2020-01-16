@@ -1,9 +1,0 @@
-vim configuration:
-https://github.com/wsdjeg/vim-galore-zh_cn
-https://www.jianshu.com/p/3066b3191cb1
-http://blog.csdn.net/mergerly/article/details/51671890
-http://www.wklken.me/posts/2015/06/07/vim-plugin-ctrlp.html
-https://github.com/yangyangwithgnu/use_vim_as_ide
-
-vim:
-https://www.jianshu.com/p/bcbe916f97e1
