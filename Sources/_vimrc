@@ -60,7 +60,6 @@ endfunction
 "             https://www.jianshu.com/p/923aec861af3(for mac)
 "             https://www.zhihu.com/question/47691414
 "             http://www.jfh.com/jfperiodical/article/2157?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io?
-"             https://blog.csdn.net/qq_41955653/article/details/86642940
 "             https://vim-adventures.com/
 
 " General Config {@{
@@ -569,13 +568,13 @@ filetype indent on
 set expandtab
 
 " 设置编辑时制表符占用空格数
-set tabstop =4
+set tabstop =2
 
 " 设置格式化时制表符占用空格数
-set shiftwidth =4
+set shiftwidth =2
 
 " 让 vim 把连续数量的空格视为一个制表符
-set softtabstop =4
+set softtabstop =2
 
 " 代码折叠
 set foldenable
@@ -651,12 +650,14 @@ Plug 'xolox/vim-misc'  " required by lua.vim, vim-session
 " lisp support
 Plug 'kovisoft/slimv'
 " lua support, reference: https://blog.csdn.net/ding_yingzi/article/details/81517401
-" Plug 'tbastos/vim-lua'
+" Plug 'tbastos/vim-lua'  TODO: conflict with ycm
 " Plug 'xolox/vim-lua-inspect'  TODO: cause error
-" Plug 'xolox/vim-lua-ftplugin' TODO: conflict with ycm
+" Plug 'xolox/vim-lua-ftplugin'  TODO: conflict with ycm
 " golang support, reference: https://blog.csdn.net/zhang197093/article/details/78559903?locationNum=5&fps=1
 Plug 'fatih/vim-go'
 Plug 'nsf/gocode', {'rtp': 'vim/'}
+" markdown support
+Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
 " version control
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
@@ -687,40 +688,50 @@ Plug 'MattesGroeger/vim-bookmarks'
 "Plugin 'lyokha/vim-xkbswitch'
 Plug 'majutsushi/tagbar'
 Plug 'derekwyatt/vim-fswitch'
+Plug 's3rvac/AutoFenc'  " 文件编码检测
 Plug 'Shougo/context_filetype.vim'  " 文件类型检测
 Plug 'kana/vim-textobj-user'
 Plug 'thinca/vim-quickrun'
 Plug 'osyo-manga/vim-precious'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
+Plug 'liuchengxu/vim-clap'  " generic interactive finder and dispatcher
 " text
 Plug 'lfv89/vim-interestingwords'
 Plug 'itchyny/vim-cursorword'
 Plug 'wellle/targets.vim'
-Plug 'voldikss/vim-translate-me'
 " codes
 Plug 'w0rp/ale'
+" coc, ycm can replace each other
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ycm-core/YouCompleteMe'
-Plug 'Chiel92/vim-autoformat'  " 格式化
+Plug 'Chiel92/vim-autoformat'  " 格式化，排版
+Plug 'prettier/vim-prettier', { 'do': 'yarn install' }  " post install (yarn install | npm install)
+Plug 'hotoo/pangu.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'justinmk/vim-syntax-extra'  " 语法高亮
+Plug 'sheerun/vim-polyglot'  " 语法高亮包
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'Shougo/echodoc.vim'
 Plug 'tpope/vim-surround'
 Plug 'scrooloose/nerdcommenter'  " 注释
 Plug 'vim-scripts/DoxygenToolkit.vim'
-Plug 'Yggdroot/indentLine'
+Plug 'Yggdroot/indentLine'  " 对齐线
+" matchparen++.vim, hiPairs, vim-parenmatch can replace each other
+" Plug 'https://www.vim.org/scripts/script.php?script_id=2059'  " matchparen++, 高亮光标当前所在括号对
+" Plug 'Yggdroot/hiPairs'
+Plug 'itchyny/vim-parenmatch'
 Plug 'jiangmiao/auto-pairs'
 Plug 'mh21/errormarker.vim'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'  " https://www.jianshu.com/p/c0ba049878ca
+" TODO: cause errors!
+" Plug 'SirVer/ultisnips'  " https://www.jianshu.com/p/c0ba049878ca
+" Plug 'honza/vim-snippets'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'AndrewRadev/quickpeek.vim'
 Plug 'AndrewRadev/tagalong.vim'
-Plug 'segeljakt/vim-silicon'
-Plug 'sheerun/vim-polyglot'
 Plug 'christoomey/vim-sort-motion'  " 排序
-Plug 'obreitwi/vim-sort-folds'
+" TODO: cause errors!
+" Plug 'obreitwi/vim-sort-folds'
 Plug 'chiedo/vim-sort-blocks-by'
 Plug 'FooSoft/vim-argwrap'
 " string search and replace
@@ -729,6 +740,10 @@ Plug 'dyng/ctrlsf.vim'
 Plug 'dkprice/vim-easygrep'
 " tags search
 Plug 'ludovicchabant/vim-gutentags'
+" ctrlp, fzf, leaderf can replace each other
+" Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+" Plug 'junegunn/fzf.vim'
 if IsWindows()
     Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
 else
@@ -740,7 +755,14 @@ Plug 'xuhdev/SingleCompile'
 Plug 'Shougo/vimproc.vim'
 Plug 'idanarye/vim-vebugger'
 " terminal
+Plug 'Shougo/deol.nvim'
 Plug 'godlygeek/csapprox'
+Plug 'skywind3000/vim-terminal-help'
+" tools
+Plug 'segeljakt/vim-silicon'  " 图片
+Plug 'ashisha/image.vim'
+Plug 'voldikss/vim-translator'  " 翻译
+Plug 'itchyny/calendar.vim'  " 日历
 " others
 Plug 'skywind3000/asyncrun.vim'
 " }@}
@@ -825,11 +847,9 @@ let g:ycm_semantic_triggers =  {
 			\ 'cs,lua,javascript': ['re!\w{2}'],
 			\ }
 
-" 上下选择
-let g:ycm_key_list_select_completion   = ['<c-n>']
-let g:ycm_key_list_select_completion   = ['<Down>']
-let g:ycm_key_list_previous_completion = ['<c-p>']
-let g:ycm_key_list_previous_completion = ['<Up>']
+" 上下选择，没有这个会拦截掉tab, 导致其他插件的tab不能用
+let g:ycm_key_list_select_completion   = ['<c-n>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<c-p>', '<Up>']
 "关闭加载.ycm_extra_conf.py提示
 let g:ycm_confirm_extra_conf=0
 
@@ -1029,16 +1049,51 @@ endif
 " }@}
 
 " leaderf {@{
-let g:Lf_ShortcutF = '<leader>ff'
-let g:Lf_ShortcutB = '<leader>fb'
-noremap <leader>ff :LeaderfFile<cr>
-noremap <leader>ffm :LeaderfMru<cr>
-noremap <leader>ffu :LeaderfFunction<cr>
-noremap <leader>fb :LeaderfBuffer<cr>
-noremap <leader>ft :LeaderfBufTag<cr>
-noremap <leader>fs :LeaderfLine<cr>
+" don't show the help in normal mode
+let g:Lf_HideHelp = 1
+let g:Lf_UseCache = 0
+let g:Lf_UseVersionControlTool = 0
+let g:Lf_IgnoreCurrentBufferName = 1
 
-let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
+" popup mode
+let g:Lf_WindowPosition = 'popup'
+let g:Lf_PreviewInPopup = 1
+" let g:Lf_StlSeparator = { 'left': "\ue0b0", 'right': "\ue0b2", 'font': "DejaVu Sans Mono for Powerline" }
+let g:Lf_StlSeparator = { 'left': "\ue0b0", 'right': "\ue0b2", 'font': "" }
+let g:Lf_PreviewResult = {'Function': 0, 'BufTag': 0 }
+
+let g:Lf_ShortcutF = '<leader>lff'
+noremap <leader>lfu :LeaderfFunction<cr>
+noremap <leader>lfb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
+noremap <leader>lfm :<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>
+noremap <leader>lft :<C-U><C-R>=printf("Leaderf bufTag %s", "")<CR><CR>
+noremap <leader>lfl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
+
+" VAX styles
+noremap <M-O> :LeaderfFile<cr>
+noremap <M-R> :LeaderfMru<cr>
+noremap <M-m> :LeaderfFunction<cr>
+noremap <M-S> :LeaderfBufTag<cr>
+inoremap <M-O> :<esc>LeaderfFile<cr>
+inoremap <M-R> :<esc>LeaderfMru<cr>
+inoremap <M-m> :<esc>LeaderfFunction<cr>
+inoremap <M-S> :<esc>LeaderfBufTag<cr>
+
+noremap <C-B> :<C-U><C-R>=printf("Leaderf! rg --current-buffer -e %s ", expand("<cword>"))<CR>
+noremap <C-F> :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR>
+" search visually selected text literally
+xnoremap gf :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR>
+noremap go :<C-U>Leaderf! rg --recall<CR>
+
+" should use `Leaderf gtags --update` first
+let g:Lf_GtagsAutoGenerate = 0
+let g:Lf_Gtagslabel = 'native-pygments'
+noremap <leader>lfr :<C-U><C-R>=printf("Leaderf! gtags -r %s --auto-jump", expand("<cword>"))<CR><CR>
+noremap <leader>lfd :<C-U><C-R>=printf("Leaderf! gtags -d %s --auto-jump", expand("<cword>"))<CR><CR>
+noremap <leader>lfo :<C-U><C-R>=printf("Leaderf! gtags --recall %s", "")<CR><CR>
+noremap <leader>lfn :<C-U><C-R>=printf("Leaderf gtags --next %s", "")<CR><CR>
+noremap <leader>lfp :<C-U><C-R>=printf("Leaderf gtags --previous %s", "")<CR><CR>
+
 let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
 let g:Lf_WorkingDirectoryMode = 'Ac'
 let g:Lf_WindowHeight = 0.30
@@ -1048,9 +1103,7 @@ else
 let g:Lf_CacheDirectory = expand($VIM.'/vimfiles/cache')
 endif
 let g:Lf_ShowRelativePath = 0
-let g:Lf_HideHelp = 1
 let g:Lf_StlColorscheme = 'powerline'
-let g:Lf_PreviewResult = {'Function':0, 'BufTag':0}
 let g:Lf_UseMemoryCache = 0
 " }@}
 
@@ -1325,4 +1378,26 @@ let g:tagbar_type_lua = {
 nmap <Leader>emc :ErrorAtCursor<CR>
 nmap <Leader>emr :RemoveErrorMarkers<CR>
 " }@}
+
+" vim-prettier {@{
+nmap <Leader>py <Plug>(Prettier)
+let g:prettier#exec_cmd_async = 1
+" when running at every change you may want to disable quickfix
+let g:prettier#quickfix_enabled = 0
+let g:prettier#autoformat = 0
+autocmd BufWritePre,TextChanged,InsertLeave *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
+" }@}
+
+" vim-translator {@{
+" Echo translation in the cmdline
+nmap <silent> <Leader>tl <Plug>Translate
+vmap <silent> <Leader>tl <Plug>TranslateV
+" Display translation in a window
+nmap <silent> <Leader>tlw <Plug>TranslateW
+vmap <silent> <Leader>tlw <Plug>TranslateWV
+" Replace the text with translation
+nmap <silent> <Leader>tlr <Plug>TranslateR
+vmap <silent> <Leader>tlr <Plug>TranslateRV
+" }@}
+
 " }@}
