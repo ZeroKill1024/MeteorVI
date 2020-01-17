@@ -293,6 +293,43 @@ nnoremap <leader><space>c zM
 " 跳转到下/上一个折叠
 nnoremap <leader><space>j zj
 nnoremap <leader><space>k zk
+
+" TODO: does't work, use vim-asterisk replace
+" Search for selected text.
+" http://vim.wikia.com/wiki/VimTip171
+" let s:save_cpo = &cpo | set cpo&vim
+" if !exists('g:VeryLiteral')
+"   let g:VeryLiteral = 0
+" endif
+" function! s:VSetSearch(cmd)
+"   let old_reg = getreg('"')
+"   let old_regtype = getregtype('"')
+"   normal! gvy
+"   if @@ =~? '^[0-9a-z,_]*$' || @@ =~? '^[0-9a-z ,_]*$' && g:VeryLiteral
+"     let @/ = @@
+"   else
+"     let pat = escape(@@, a:cmd.'\')
+"     if g:VeryLiteral
+"       let pat = substitute(pat, '\n', '\\n', 'g')
+"     else
+"       let pat = substitute(pat, '^\_s\+', '\\s\\+', '')
+"       let pat = substitute(pat, '\_s\+$', '\\s\\*', '')
+"       let pat = substitute(pat, '\_s\+', '\\_s\\+', 'g')
+"     endif
+"     let @/ = '\V'.pat
+"   endif
+"   normal! gV
+"   call setreg('"', old_reg, old_regtype)
+" endfunction
+" vnoremap <silent> * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR>
+" vnoremap <silent> # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>/<CR>
+" vmap <kMultiply> *
+" nmap <silent> <Plug>VLToggle :let g:VeryLiteral = !g:VeryLiteral
+"   \\| echo "VeryLiteral " . (g:VeryLiteral ? "On" : "Off")<CR>
+" if !hasmapto("<Plug>VLToggle")
+"   nmap <unique> <Leader>vl <Plug>VLToggle
+" endif
+" let &cpo = s:save_cpo | unlet s:save_cpo
 " }@}
 
 " 窗口操作 {@{
@@ -666,7 +703,6 @@ Plug 'samoshkin/vim-mergetool'
 Plug 'airblade/vim-gitgutter'
 " editor
 Plug 'luochen1990/rainbow'
-Plug 'haya14busa/incsearch.vim'
 Plug 'easymotion/vim-easymotion'
 Plug 'andymass/vim-matchup'
 Plug 'qstrahl/vim-matchmaker'
@@ -695,6 +731,9 @@ Plug 'osyo-manga/vim-precious'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'liuchengxu/vim-clap'  " generic interactive finder and dispatcher
+" 高亮复制的区域
+Plug 'kana/vim-operator-user'
+Plug 'haya14busa/vim-operator-flashy'
 " text
 Plug 'lfv89/vim-interestingwords'
 Plug 'itchyny/vim-cursorword'
@@ -737,6 +776,8 @@ Plug 'FooSoft/vim-argwrap'
 Plug 'mileszs/ack.vim'
 Plug 'dyng/ctrlsf.vim'
 Plug 'dkprice/vim-easygrep'
+Plug 'haya14busa/vim-asterisk'  " visual模式下*/#功能
+Plug 'haya14busa/incsearch.vim'
 " tags search
 Plug 'ludovicchabant/vim-gutentags'
 " ctrlp, fzf, leaderf can replace each other
@@ -989,15 +1030,20 @@ let g:rainbow_conf = {
 " }@}
 
 " incsearch {@{
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
+
 " :h g:incsearch#auto_nohlsearch
 set hlsearch
 let g:incsearch#auto_nohlsearch = 1
 map n  <Plug>(incsearch-nohl-n)
 map N  <Plug>(incsearch-nohl-N)
-map *  <Plug>(incsearch-nohl-*)
-map #  <Plug>(incsearch-nohl-#)
-map g* <Plug>(incsearch-nohl-g*)
-map g# <Plug>(incsearch-nohl-g#)
+" TODO: conflict with vim-asterisk
+" map *  <Plug>(incsearch-nohl-*)
+" map #  <Plug>(incsearch-nohl-#)
+" map g* <Plug>(incsearch-nohl-g*)
+" map g# <Plug>(incsearch-nohl-g#)
 " }@}
 
 " easymotion {@{
@@ -1077,10 +1123,12 @@ noremap <leader>lfl :<C-U><C-R>=printf("Leaderf line %s --nowrap", "")<CR><CR>
 " alt + [shift] + o/r/s/m
 noremap <M-O> <esc>:<C-U><C-R>=printf("Leaderf file %s --nowrap", "")<CR><CR>
 noremap <M-R> <esc>:<C-U><C-R>=printf("Leaderf mru %s --nowrap", "")<CR><CR>
+noremap <M-B> <esc>:<C-U><C-R>=printf("Leaderf buffer %s --nowrap", "")<CR><CR>
 noremap <M-S> <esc>:<C-U><C-R>=printf("Leaderf bufTag %s --nowrap", "")<CR><CR>
 noremap <M-m> <esc>:<C-U><C-R>=printf("Leaderf function %s --bottom --nowrap", "")<CR><CR>
 inoremap <M-O> <esc>:<C-U><C-R>=printf("Leaderf file %s --nowrap", "")<CR><CR>
 inoremap <M-R> <esc>:<C-U><C-R>=printf("Leaderf mru %s --nowrap", "")<CR><CR>
+inoremap <M-B> <esc>:<C-U><C-R>=printf("Leaderf buffer %s --nowrap", "")<CR><CR>
 inoremap <M-S> <esc>:<C-U><C-R>=printf("Leaderf bufTag %s --nowrap", "")<CR><CR>
 inoremap <M-m> <esc>:<C-U><C-R>=printf("Leaderf function %s --bottom --nowrap", "")<CR><CR>
 
@@ -1405,4 +1453,20 @@ nmap <silent> <Leader>tlr <Plug>TranslateR
 vmap <silent> <Leader>tlr <Plug>TranslateRV
 " }@}
 
+" vim-asterisk {@{
+let g:asterisk#keeppos = 1
+map *   <Plug>(asterisk-*)
+map #   <Plug>(asterisk-#)
+map g*  <Plug>(asterisk-g*)
+map g#  <Plug>(asterisk-g#)
+map z*  <Plug>(asterisk-z*)
+map gz* <Plug>(asterisk-gz*)
+map z#  <Plug>(asterisk-z#)
+map gz# <Plug>(asterisk-gz#)
+" }@}
+
+" vim-operator-flashy {@{
+map y <Plug>(operator-flashy)
+nmap Y <Plug>(operator-flashy)$
+" }@}
 " }@}
