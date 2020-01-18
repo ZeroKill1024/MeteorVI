@@ -58,6 +58,7 @@ endfunction
 "             https://github.com/yangyangwithgnu/use_vim_as_ide
 "             https://github.com/spf13/spf13-vim
 "             https://www.jianshu.com/p/923aec861af3(for mac)
+"             https://zhuanlan.zhihu.com/vimrc
 "             https://www.zhihu.com/question/47691414
 "             http://www.jfh.com/jfperiodical/article/2157?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io?
 "             https://vim-adventures.com/
@@ -501,14 +502,16 @@ let g:NERDTreeMapHelp          =help
 let g:NERDTreeMapRefreshRoot   =refresh
 " }@}
 
-" VimFswitch {@{
+" vim-fswitch {@{
 " *.cpp 和 *.h 间切换
 nmap <silent><leader>sw :FSHere<cr>
+" VAX shortcut styles
+nnoremap <A-o> :FSHere<cr>
 " }@}
 
 " YouCompleteMe {@{
-" 转到定义
-nnoremap <A-g> :YcmCompleter GoToDefinitionElseDeclaration<CR>
+" 转到定义, 使用gutentags_plus代替
+" nnoremap <A-g> :YcmCompleter GoToDefinitionElseDeclaration<CR>
 " }@}
 
 " Slimv {@{
@@ -779,7 +782,9 @@ Plug 'dkprice/vim-easygrep'
 Plug 'haya14busa/vim-asterisk'  " visual模式下*/#功能
 Plug 'haya14busa/incsearch.vim'
 " tags search
-Plug 'ludovicchabant/vim-gutentags'
+Plug 'ludovicchabant/vim-gutentags'  " 定义跳转，查找引用
+Plug 'skywind3000/gutentags_plus'
+Plug 'skywind3000/vim-preview'
 " ctrlp, fzf, leaderf can replace each other
 " Plug 'ctrlpvim/ctrlp.vim'
 " Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -1074,25 +1079,62 @@ let g:matchmaker_matchpriority = 0
 " }@}
 
 " gutentags {@{
+" references: https://zhuanlan.zhihu.com/p/36279445
+
+" gtags 是支持使用 ctags/universal-ctags 或者 pygments 来作为分析前端支持 50+ 种语言
+" pip install pygments
+
+" 告诉 gtags 默认 C/C++/Java 等六种原生支持的代码直接使用 gtags 本地分析器，而其他语言使用 pygments 模块
+let $GTAGSLABEL = 'native-pygments'
+" 必须设置，否则会找不到 native-pygments 和 language map 的定义
+let $GTAGSCONF = '$VIM/../gtags/share/gtags/gtags.conf'
+
+" 允许 gutentags 打开一些高级命令和选项
+let g:gutentags_define_advanced_commands = 1
+
 " gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
 let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
 
 " 所生成的数据文件的名称
 let g:gutentags_ctags_tagfile = '.tags'
 
-" 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
-let s:vim_tags = expand('~/.cache/tags')
+" 同时开启 ctags 和 gtags 支持：
+let g:gutentags_modules = []
+if executable('ctags')
+	let g:gutentags_modules += ['ctags']
+endif
+if executable('gtags-cscope') && executable('gtags')
+	let g:gutentags_modules += ['gtags_cscope']
+endif
+
+" 将自动生成的 tags/gtags 文件全部放入 .vim/.cache/tags 目录中，避免污染工程目录
+if IsWindows()
+  let s:vim_tags = expand('$VIM/.cache/tags')
+else
+  let s:vim_tags = expand('~/.vim/.cache/tags')
+endif
 let g:gutentags_cache_dir = s:vim_tags
 
-" 配置 ctags 的参数
+" 检测 tags目录 不存在就新建
+if !isdirectory(s:vim_tags)
+    silent! call mkdir(s:vim_tags, 'p')
+endif
+
+" 配置 ctags 的参数，老的 Exuberant-ctags 不能有 --extra=+q，注意
 let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
 let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
 let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
 
-" 检测 ~/.cache/tags 不存在就新建
-if !isdirectory(s:vim_tags)
-    silent! call mkdir(s:vim_tags, 'p')
-endif
+" 如果使用 universal ctags 需要增加下面一行，老的 Exuberant-ctags 不能加下一行
+let g:gutentags_ctags_extra_args += ['--output-format=e-ctags']
+
+" 禁用 gutentags 自动加载 gtags 数据库的行为
+let g:gutentags_auto_add_gtags_cscope = 0
+" }@}
+
+" gutentags_plus {@{
+" change focus to quickfix window after search (optional).
+let g:gutentags_plus_switch = 1
 " }@}
 
 " leaderf {@{
