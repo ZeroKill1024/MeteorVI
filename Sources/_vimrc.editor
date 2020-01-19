@@ -1,0 +1,104 @@
+" Text Editor Config {@{
+set nu!
+
+" 开启语法高亮功能
+syntax enable
+
+" 允许用指定语法高亮配色方案替换默认方案
+syntax on
+
+"set guifont=Consolas:h16
+"set guifont =Monaco:h16
+
+" 开启实时搜索功能
+set incsearch
+
+" 搜索时大小写不敏感
+set ignorecase
+" 如果有一个大写字母，则切换到大小写敏感查找
+set smartcase
+
+" 关闭兼容模式
+set nocompatible
+
+" vim 自身命令行模式智能补全
+set wildmenu
+
+" 总是显示状态栏
+set laststatus =2
+
+" 显示光标当前位置
+set ruler
+
+" 开启行号显示
+set number
+
+" 开启相对行号
+set relativenumber
+
+" 高亮显示当前行/列
+set cursorline
+"set cursorcolumn
+
+" 高亮显示搜索结果
+set hlsearch
+
+" 开启文件类型侦测
+filetype on
+
+" 根据侦测到的不同类型加载对应的插件
+filetype plugin on
+
+" 自适应不同语言的智能缩进
+filetype indent on
+
+" 将制表符扩展为空格
+set expandtab
+
+" 设置编辑时制表符占用空格数
+set tabstop =2
+
+" 设置格式化时制表符占用空格数
+set shiftwidth =2
+
+" 让 vim 把连续数量的空格视为一个制表符
+set softtabstop =2
+
+" 代码折叠
+set foldenable
+"set foldmethod =indent
+"set foldmethod =syntax
+set foldmethod =marker
+set foldmarker ={@{,}@}
+
+" 设置不自动折行
+set nowrap
+
+" 设置索引文件位置
+set tags=./.tags;,.tags
+" }@}
+
+
+" Editor Theme Config {@{
+"colorscheme molokai
+"colorscheme phd
+
+" Solarized {@{
+colorscheme solarized
+set background =dark
+let g:solarized_termcolors =256
+" }@}
+
+" 禁止光标闪烁
+"set gcr =a:block-blinkon0
+
+" 禁止显示滚动条
+set guioptions -=l
+set guioptions -=L
+set guioptions -=r
+set guioptions -=R
+
+" 禁止显示菜单和工具条
+set guioptions -=m
+set guioptions -=T
+" }@}
