@@ -188,8 +188,8 @@ if IsWindows()
   if filereadable(expand('$VIM/_vimrc.editor'))
     source $VIM/_vimrc.editor
   endif
-  if filereadable(expand('$VIM/_vimrc.plug'))
-    source $VIM/_vimrc.plug
+  if filereadable(expand('$VIM/_vimrc.plugin'))
+    source $VIM/_vimrc.plugin
   endif
 else
   if filereadable(expand('~/.vim/_vimrc.key'))
@@ -198,8 +198,8 @@ else
   if filereadable(expand('~/.vim/_vimrc.editor'))
     source ~/.vim/_vimrc.editor
   endif
-  if filereadable(expand('~/.vim/_vimrc.plug'))
-    source ~/.vim/_vimrc.plug
+  if filereadable(expand('~/.vim/_vimrc.plugin'))
+    source ~/.vim/_vimrc.plugin
   endif
 endif
 " }@}

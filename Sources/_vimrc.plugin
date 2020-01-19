@@ -78,7 +78,7 @@ Plug 'liuchengxu/vim-clap'  " generic interactive finder and dispatcher
 " 高亮复制的区域
 Plug 'kana/vim-operator-user'
 Plug 'haya14busa/vim-operator-flashy'
-Plug 'chxuan/vimplus-startify'  " start page
+Plug 'mhinz/vim-startify'  " start screen
 " text
 Plug 'lfv89/vim-interestingwords'
 Plug 'itchyny/vim-cursorword'
@@ -162,9 +162,12 @@ call plug#end()
 
 " NERDTree {@{
 " reference: https://segmentfault.com/a/1190000015143474
+
 " TODO: should be async
+" TODO: conflict vim-startify
 " 在 vim 启动的时候默认开启 NERDTree（autocmd 可以缩写为 au）
-autocmd VimEnter * NERDTree
+" autocmd VimEnter * NERDTree
+
 " 将 NERDTree 的窗口设置在 vim 窗口的右侧（默认为左侧）
 let NERDTreeWinPos ="right"
 " 当打开 NERDTree 窗口时，自动显示 Bookmarks
@@ -180,7 +183,7 @@ let NERDTreeMinimalUI =1
 let NERDTreeAutoDeleteBuffer =1
 " vim不指定具体文件打开是，自动使用nerdtree
 autocmd StdinReadPre * let s:std_in =1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 " 当vim打开一个目录时，nerdtree自动使用
 autocmd StdinReadPre * let s:std_in =1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
@@ -1020,5 +1023,8 @@ nnoremap <silent> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+" }@}
+
+" vim-startify {@{
 " }@}
 " }@}
