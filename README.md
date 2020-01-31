@@ -1,2 +1,3 @@
 # MeteorVI
-my vim configuration
+my vim configuration.
+run python Install.py in terminal.

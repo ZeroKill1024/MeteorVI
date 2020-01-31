@@ -5,7 +5,7 @@ endfunction
 function! IsWindows()
     return (has('win32') || has('win64'))
 endfunction
-function! IsOSX()
+function! IsMac()
     return has('macunix')
 endfunction
 
@@ -62,6 +62,8 @@ endfunction
 "             https://www.zhihu.com/question/47691414
 "             http://www.jfh.com/jfperiodical/article/2157?hmsr=toutiao.io&utm_medium=toutiao.io&utm_source=toutiao.io?
 "             https://vim-adventures.com/
+"             macvim: (brew cask install macvim)
+"             https://www.jianshu.com/p/923aec861af3?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation
 
 " General Config {@{
 if IsWindows()
@@ -126,13 +128,20 @@ endif
 
 " support utf-8
 if has("multi_byte")
+    " 设置打开文件的编码格式
+    set fileencoding=utf-8
+    set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
     set encoding=utf-8
     set termencoding=utf-8
     set formatoptions+=mM
-    set fencs=utf-8,gbk
+    set fencs=utf-8,gbk,gb2312,gb18030
     if v:lang =~? '^/(zh/)/|/(ja/)/|/(ko/)'
         set ambiwidth=double
     endif
+    " Vim 在与屏幕/键盘交互时使用的编码(取决于实际的终端的设定)
+    set langmenu=zh_CN.UTF-8
+    " 设置中文帮助
+    set helplang=cn
     if has("win32")
         source $VIMRUNTIME/delmenu.vim
         source $VIMRUNTIME/menu.vim
@@ -192,14 +201,14 @@ if IsWindows()
     source $VIM/_vimrc.plugin
   endif
 else
-  if filereadable(expand('~/.vim/_vimrc.key'))
-    source ~/.vim/_vimrc.key
+  if filereadable(expand('~/.vimrc.key'))
+    source ~/.vimrc.key
   endif
-  if filereadable(expand('~/.vim/_vimrc.editor'))
-    source ~/.vim/_vimrc.editor
+  if filereadable(expand('~/.vimrc.editor'))
+    source ~/.vimrc.editor
   endif
-  if filereadable(expand('~/.vim/_vimrc.plugin'))
-    source ~/.vim/_vimrc.plugin
+  if filereadable(expand('~/.vimrc.plugin'))
+    source ~/.vimrc.plugin
   endif
 endif
 " }@}
