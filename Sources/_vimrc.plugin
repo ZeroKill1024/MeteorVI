@@ -40,6 +40,8 @@ Plug 'fatih/vim-go'
 Plug 'nsf/gocode', {'rtp': 'vim/'}
 " markdown support
 Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
+" latex support
+Plug 'lervag/vimtex'
 " version control
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
@@ -1045,5 +1047,19 @@ autocmd VimEnter *
 function! StartifyEntryFormat()
   return 'WebDevIconsGetFileTypeSymbol(absolute_path) ." ". entry_path'
 endfunction
+" }@}
+
+" vimtex {@{
+" reference: https://blog.csdn.net/qyhaill/article/details/100832805
+" https://blog.csdn.net/CY_TEC/article/details/89420263
+" https://www.cnblogs.com/ouyangsong/p/9348175.html
+" https://tex.stackexchange.com/questions/160253/latex-cannot-find-sty-files
+" https://stackoverflow.com/questions/1390828/how-do-i-install-a-latex-sty-file-on-osx
+" https://blog.csdn.net/tinktanker/article/details/79657429
+let g:tex_flavor='latex'
+let g:vimtex_view_method='zathura'
+let g:vimtex_quickfix_mode=0
+set conceallevel=1
+let g:tex_conceal='abdmg'
 " }@}
 " }@}
