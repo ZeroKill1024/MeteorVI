@@ -193,22 +193,28 @@ endif
 if IsWindows()
   if filereadable(expand('$VIM/_vimrc.key'))
     source $VIM/_vimrc.key
+    autocmd BufWritePost $VIM/_vimrc.key source $VIM/_vimrc.key
   endif
   if filereadable(expand('$VIM/_vimrc.editor'))
     source $VIM/_vimrc.editor
+    autocmd BufWritePost $VIM/_vimrc.editor source $VIM/_vimrc.editor
   endif
   if filereadable(expand('$VIM/_vimrc.plugin'))
     source $VIM/_vimrc.plugin
+    autocmd BufWritePost $VIM/_vimrc.plugin source $VIM/_vimrc.plugin
   endif
 else
   if filereadable(expand('~/.vimrc.key'))
     source ~/.vimrc.key
+    autocmd BufWritePost ~/.vimrc.key source ~/.vimrc.key
   endif
   if filereadable(expand('~/.vimrc.editor'))
     source ~/.vimrc.editor
+    autocmd BufWritePost ~/.vimrc.editor source ~/.vimrc.editor
   endif
   if filereadable(expand('~/.vimrc.plugin'))
     source ~/.vimrc.plugin
+    autocmd BufWritePost ~/.vimrc.plugin source ~/.vimrc.plugin
   endif
 endif
 " }@}

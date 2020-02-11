@@ -31,6 +31,7 @@ if __name__ == "__main__":
     if os.path.exists(runtime) and os.path.isdir(runtime):
         for path, dirs, files in os.walk(runtime):
             for f in files:
+                path = path.replace("\\", '/')
                 relPath = os.path.join(path, f)
                 newPath = destPath + path.split('/')[-1] + '/'
                 print(relPath)
