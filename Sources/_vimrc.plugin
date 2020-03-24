@@ -1091,4 +1091,9 @@ let g:LatexBox_autojump = 1
 " TODO: vimtex does't work on windows
 " let g:polyglot_disabled = ['latex']
 " }@}
+
+" vim-terminal-help {@{
+" TODO: can't map alt in mac
+let g:terminal_key = <leader>tet
+" }@}
 " }@}
