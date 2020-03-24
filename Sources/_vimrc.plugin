@@ -508,6 +508,7 @@ noremap <silent> <leader>gf :GscopeFind f <C-R>=expand("<cfile>")<cr><cr>
 noremap <silent> <leader>gi :GscopeFind i <C-R>=expand("<cfile>")<cr><cr>
 noremap <silent> <leader>ga :GscopeFind a <C-R><C-W><cr>
 
+" TODO: can't map alt in mac
 " VAX shortcut styles
 " alt + [shift] + f/g
 noremap <M-F> :GscopeFind s <C-R><C-W><cr>
@@ -538,6 +539,7 @@ noremap <leader>lft :<C-U><C-R>=printf("Leaderf bufTag %s --nowrap", "")<CR><CR>
 noremap <leader>lfu :<C-U><C-R>=printf("Leaderf function %s --nowrap", "")<CR><CR>
 noremap <leader>lfl :<C-U><C-R>=printf("Leaderf line %s --nowrap", "")<CR><CR>
 
+" TODO: can't map alt in mac
 " VAX shortcut styles
 " alt + [shift] + o/r/s/m
 noremap <M-O> :<C-U><C-R>=printf("Leaderf file %s --nowrap", "")<CR><CR>
