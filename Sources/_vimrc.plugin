@@ -39,7 +39,12 @@ Plug 'kovisoft/slimv'
 Plug 'fatih/vim-go'
 Plug 'nsf/gocode', {'rtp': 'vim/'}
 " markdown support
-Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
+" Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
+" If you don't have nodejs and yarn
+" use pre build
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 " latex support
 " TODO: vimtex does't work on windows
 " Plug 'lervag/vimtex'
@@ -1095,5 +1100,10 @@ let g:LatexBox_autojump = 1
 " vim-terminal-help {@{
 " TODO: can't map alt in mac
 let g:terminal_key = <leader>tet
+" }@}
+
+" markdown-preview {@{
+nmap <leader>mp <Plug>MarkdownPreview
+nmap <leader>smp <Plug>StopMarkdownPreview
 " }@}
 " }@}
