@@ -41,10 +41,10 @@ Plug 'nsf/gocode', {'rtp': 'vim/'}
 " markdown support
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
-" Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
+Plug 'suan/vim-instant-markdown', { 'for': 'markdown', 'do': 'pip3 install --user smdv' }
 " If you don't have nodejs and yarn
 " use pre build
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+" Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 " latex support
 " TODO: vimtex does't work on windows
 " Plug 'lervag/vimtex'
@@ -97,7 +97,8 @@ Plug 'wellle/targets.vim'
 Plug 'w0rp/ale'
 " coc, ycm can replace each other
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'ycm-core/YouCompleteMe'
+Plug 'ycm-core/YouCompleteMe', { 'do': 'python3 install.py' }
+Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
 Plug 'Chiel92/vim-autoformat'  " 格式化，排版
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }  " post install (yarn install | npm install)
 Plug 'hotoo/pangu.vim'
@@ -513,11 +514,16 @@ noremap <silent> <leader>gf :GscopeFind f <C-R>=expand("<cfile>")<cr><cr>
 noremap <silent> <leader>gi :GscopeFind i <C-R>=expand("<cfile>")<cr><cr>
 noremap <silent> <leader>ga :GscopeFind a <C-R><C-W><cr>
 
-" TODO: can't map alt in mac
 " VAX shortcut styles
 " alt + [shift] + f/g
-noremap <M-F> :GscopeFind s <C-R><C-W><cr>
-noremap <M-g> :GscopeFind g <C-R><C-W><cr>
+if IsMac()
+    " NOTE: can't map alt in mac: https://www.cnblogs.com/yanyichao/p/4026626.html
+    noremap Ï :GscopeFind s <C-R><C-W><cr>
+    noremap © :GscopeFind g <C-R><C-W><cr>
+else
+    noremap <M-F> :GscopeFind s <C-R><C-W><cr>
+    noremap <M-g> :GscopeFind g <C-R><C-W><cr>
+endif
 " }@}
 
 " leaderf {@{
@@ -544,19 +550,32 @@ noremap <leader>lft :<C-U><C-R>=printf("Leaderf bufTag %s --nowrap", "")<CR><CR>
 noremap <leader>lfu :<C-U><C-R>=printf("Leaderf function %s --nowrap", "")<CR><CR>
 noremap <leader>lfl :<C-U><C-R>=printf("Leaderf line %s --nowrap", "")<CR><CR>
 
-" TODO: can't map alt in mac
 " VAX shortcut styles
 " alt + [shift] + o/r/s/m
-noremap <M-O> :<C-U><C-R>=printf("Leaderf file %s --nowrap", "")<CR><CR>
-noremap <M-R> :<C-U><C-R>=printf("Leaderf mru %s --nowrap", "")<CR><CR>
-noremap <M-B> :<C-U><C-R>=printf("Leaderf buffer %s --nowrap", "")<CR><CR>
-noremap <M-S> :<C-U><C-R>=printf("Leaderf bufTag %s --nowrap", "")<CR><CR>
-noremap <M-m> :<C-U><C-R>=printf("Leaderf function %s --bottom --nowrap", "")<CR><CR>
-inoremap <M-O> <esc>:<C-U><C-R>=printf("Leaderf file %s --nowrap", "")<CR><CR>
-inoremap <M-R> <esc>:<C-U><C-R>=printf("Leaderf mru %s --nowrap", "")<CR><CR>
-inoremap <M-B> <esc>:<C-U><C-R>=printf("Leaderf buffer %s --nowrap", "")<CR><CR>
-inoremap <M-S> <esc>:<C-U><C-R>=printf("Leaderf bufTag %s --nowrap", "")<CR><CR>
-inoremap <M-m> <esc>:<C-U><C-R>=printf("Leaderf function %s --bottom --nowrap", "")<CR><CR>
+if IsMac()
+    " NOTE: can't map alt in mac: https://www.cnblogs.com/yanyichao/p/4026626.html
+    noremap Ø :<C-U><C-R>=printf("Leaderf file %s --nowrap", "")<CR><CR>
+    noremap ‰ :<C-U><C-R>=printf("Leaderf mru %s --nowrap", "")<CR><CR>
+    noremap ı :<C-U><C-R>=printf("Leaderf buffer %s --nowrap", "")<CR><CR>
+    noremap Í :<C-U><C-R>=printf("Leaderf bufTag %s --nowrap", "")<CR><CR>
+    noremap µ :<C-U><C-R>=printf("Leaderf function %s --bottom --nowrap", "")<CR><CR>
+    inoremap Ø <esc>:<C-U><C-R>=printf("Leaderf file %s --nowrap", "")<CR><CR>
+    inoremap ‰ <esc>:<C-U><C-R>=printf("Leaderf mru %s --nowrap", "")<CR><CR>
+    inoremap ı <esc>:<C-U><C-R>=printf("Leaderf buffer %s --nowrap", "")<CR><CR>
+    inoremap Í <esc>:<C-U><C-R>=printf("Leaderf bufTag %s --nowrap", "")<CR><CR>
+    inoremap µ <esc>:<C-U><C-R>=printf("Leaderf function %s --bottom --nowrap", "")<CR><CR>
+else
+    noremap <M-O> :<C-U><C-R>=printf("Leaderf file %s --nowrap", "")<CR><CR>
+    noremap <M-R> :<C-U><C-R>=printf("Leaderf mru %s --nowrap", "")<CR><CR>
+    noremap <M-B> :<C-U><C-R>=printf("Leaderf buffer %s --nowrap", "")<CR><CR>
+    noremap <M-S> :<C-U><C-R>=printf("Leaderf bufTag %s --nowrap", "")<CR><CR>
+    noremap <M-m> :<C-U><C-R>=printf("Leaderf function %s --bottom --nowrap", "")<CR><CR>
+    inoremap <M-O> <esc>:<C-U><C-R>=printf("Leaderf file %s --nowrap", "")<CR><CR>
+    inoremap <M-R> <esc>:<C-U><C-R>=printf("Leaderf mru %s --nowrap", "")<CR><CR>
+    inoremap <M-B> <esc>:<C-U><C-R>=printf("Leaderf buffer %s --nowrap", "")<CR><CR>
+    inoremap <M-S> <esc>:<C-U><C-R>=printf("Leaderf bufTag %s --nowrap", "")<CR><CR>
+    inoremap <M-m> <esc>:<C-U><C-R>=printf("Leaderf function %s --bottom --nowrap", "")<CR><CR>
+endif
 
 noremap <C-B> :<C-U><C-R>=printf("Leaderf! rg --current-buffer -e %s ", expand("<cword>"))<CR>
 noremap <C-F> :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR>
@@ -1098,12 +1117,23 @@ let g:LatexBox_autojump = 1
 " }@}
 
 " vim-terminal-help {@{
-" TODO: can't map alt in mac
-let g:terminal_key = <leader>tet
+if IsMac()
+    " NOTE: can't map alt in mac: https://www.cnblogs.com/yanyichao/p/4026626.html
+    let g:terminal_key = '≠'
+endif
+" }@}
+
+" vim-instant-markdown {@{
+nmap <leader>mdp :InstantMarkdownPreview
+nmap <leader>mds :InstantMarkdownStop
 " }@}
 
 " markdown-preview {@{
-nmap <leader>mp <Plug>MarkdownPreview
-nmap <leader>smp <Plug>StopMarkdownPreview
+nmap <leader>mdp <Plug>MarkdownPreview
+nmap <leader>mds <Plug>StopMarkdownPreview
+" }@}
+
+" vim-session {@{
+let g:session_autosave = 'no'
 " }@}
 " }@}
