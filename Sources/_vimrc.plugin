@@ -1124,8 +1124,10 @@ endif
 " }@}
 
 " vim-instant-markdown {@{
-nmap <leader>mdp :InstantMarkdownPreview
-nmap <leader>mds :InstantMarkdownStop
+nmap <leader>mdp :InstantMarkdownPreview<CR>
+nmap <leader>mds :InstantMarkdownStop<CR>
+" markdown to mind map: https://github.com/gera2ld/markmap-lib
+nmap <leader>mdm :! markmap %<CR>
 " }@}
 
 " markdown-preview {@{
