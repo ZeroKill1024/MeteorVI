@@ -48,6 +48,10 @@ function! OpenFileLocation()
         else
             execute "!start explorer /select, %:p:h"
         endif
+    elseif IsMac()
+        if ( expand("%:h") != "" )
+            execute "!open %:h"
+        endif
     endif
 endfunction
 " }@}
