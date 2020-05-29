@@ -41,10 +41,12 @@ Plug 'nsf/gocode', {'rtp': 'vim/'}
 " markdown support
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
-Plug 'suan/vim-instant-markdown', { 'for': 'markdown', 'do': 'pip3 install --user smdv' }
+" TODO: doesn't support flow chart
+" Plug 'suan/vim-instant-markdown', { 'for': 'markdown', 'do': 'pip3 install --user smdv' }
+Plug 'wookayin/vim-typora'
 " If you don't have nodejs and yarn
 " use pre build
-" Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 " latex support
 " TODO: vimtex does't work on windows
 " Plug 'lervag/vimtex'
@@ -1123,16 +1125,27 @@ if IsMac()
 endif
 " }@}
 
-" vim-instant-markdown {@{
-nmap <leader>mdp :InstantMarkdownPreview<CR>
-nmap <leader>mds :InstantMarkdownStop<CR>
 " markdown to mind map: https://github.com/gera2ld/markmap-lib
 nmap <leader>mdm :! markmap %<CR>
+
+" vim-instant-markdown {@{
+" nmap <leader>mdp :InstantMarkdownPreview<CR>
+" nmap <leader>mds :InstantMarkdownStop<CR>
 " }@}
 
 " markdown-preview {@{
 nmap <leader>mdp <Plug>MarkdownPreview
-nmap <leader>mds <Plug>StopMarkdownPreview
+nmap <leader>mds <Plug>MarkdownPreviewStop
+nmap <leader>mdt <Plug>MarkdownPreviewToggle
+
+" set to 1, nvim will open the preview window after entering the markdown buffer
+" default: 0
+let g:mkdp_auto_start = 1
+" }@}
+
+" vim-typora {@{
+" TODO: macOS only
+nmap <leader>mdpt :Typora<CR>
 " }@}
 
 " vim-session {@{
