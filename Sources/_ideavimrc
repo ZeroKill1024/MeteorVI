@@ -1,3 +1,13 @@
+" TODO: cannot be identified
+let g:G_IdeaVim = 1
+
+" source ~/.vimrc
+
+set easymotion
+set surround
+set multiple-cursors
+set commentary
+
 " functions {@{
 function! IsLinux()
     return (has('unix') && !has('macunix') && !has('win32unix'))
@@ -219,8 +229,8 @@ else
     autocmd BufWritePost ~/.vimrc.editor source ~/.vimrc.editor
   endif
   if filereadable(expand('~/.vimrc.plugin')) && !exists("g:G_IdeaVim")
-    source ~/.vimrc.plugin
-    autocmd BufWritePost ~/.vimrc.plugin source ~/.vimrc.plugin
+    " source ~/.vimrc.plugin
+    " autocmd BufWritePost ~/.vimrc.plugin source ~/.vimrc.plugin
   endif
 endif
 " }@}
